@@ -1,0 +1,16 @@
+{% extends 'flatpages/default.html' %}
+{% load custom_filters %}
+
+{% block title %}Все новости{% endblock %}
+
+{% block content %}
+    <h1>Все новости</h1>
+    {% for item in news %}
+        <h2><a href="{% url 'news_detail' item.id %}">{{ item.title|censor }}</a></h2>
+        <p><strong>Дата:</strong> {{ item.created_at|date:'d.m.Y' }}</p>
+        <p>{{ item.text|truncatechars:20|censor }}</p>
+        <hr>
+    {% empty %}
+        <p>Новостей пока нет.</p>
+    {% endfor %}
+{% endblock %}
