@@ -1,0 +1,22 @@
+{% extends 'flatpages/default.html' %}
+{% load custom_filters %}
+
+{% block content %}
+    <h1>Поиск новостей</h1>
+    <form method="get">
+        {{ filter.form.as_p }}
+        <button type="submit">Найти</button>
+    </form>
+
+    {% for item in news %}
+        <h2><a href="{% url 'news_detail' item.id %}">{{ item.title|censor }}</a></h2>
+        <p>{{ item.created_at|date:'d.m.Y' }}</p>
+        <p>{{ item.text|truncatechars:20|censor }}</p>
+        <hr>
+    {% empty %}
+        <p>Новостей не найдено.</p>
+    {% endfor %}
+
+    {% if is_paginated %}
+    {% endif %}
+{% endblock %}
