@@ -1,22 +1,31 @@
 {% extends 'flatpages/default.html' %}
 {% load custom_filters %}
 
+{% block title %}Поиск новостей{% endblock %}
+
 {% block content %}
-    <h1>Поиск новостей</h1>
-    <form method="get">
+    <h1 class="mb-4">🔍 Поиск новостей</h1>
+
+    <form method="get" class="mb-4">
         {{ filter.form.as_p }}
-        <button type="submit">Найти</button>
+        <button type="submit" class="btn btn-primary">Найти</button>
     </form>
 
     {% for item in news %}
-        <h2><a href="{% url 'news_detail' item.id %}">{{ item.title|censor }}</a></h2>
-        <p>{{ item.created_at|date:'d.m.Y' }}</p>
-        <p>{{ item.text|truncatechars:20|censor }}</p>
-        <hr>
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <a href="{% url 'news_detail' item.id %}" class="text-decoration-none">
+                        {{ item.title|censor }}
+                    </a>
+                </h5>
+                <p class="card-text">{{ item.text|truncatechars:20|censor }}</p>
+                <p class="card-text"><small class="text-muted">📅 {{ item.created_at|date:'d.m.Y' }}</small></p>
+            </div>
+        </div>
     {% empty %}
         <p>Новостей не найдено.</p>
     {% endfor %}
 
-    {% if is_paginated %}
-    {% endif %}
+    {% include 'partials/pagination.html' %}
 {% endblock %}

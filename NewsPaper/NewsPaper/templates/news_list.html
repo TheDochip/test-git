@@ -4,38 +4,24 @@
 {% block title %}Все новости{% endblock %}
 
 {% block content %}
-    <h1>Все новости</h1>
+    <h1 class="mb-4">📰 Все новости</h1>
 
     {% for item in news %}
-        <h2><a href="{% url 'news_detail' item.id %}">{{ item.title|censor }}</a></h2>
-        <p><strong>Дата:</strong> {{ item.created_at|date:'d.m.Y' }}</p>
-        <p>{{ item.text|truncatechars:20|censor }}</p>
-        <hr>
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <a href="{% url 'news_detail' item.id %}" class="text-decoration-none">
+                        {{ item.title|censor }}
+                    </a>
+                </h5>
+                <p class="card-text">{{ item.text|truncatechars:20|censor }}</p>
+                <p class="card-text"><small class="text-muted">📅 {{ item.created_at|date:'d.m.Y' }}</small></p>
+            </div>
+        </div>
     {% empty %}
         <p>Новостей пока нет.</p>
     {% endfor %}
 
-    {# Пагинация — теперь внутри блока content #}
-    {% if is_paginated %}
-        <div class="pagination">
-            {% if page_obj.has_previous %}
-                <a href="?page=1">Первая</a>
-                <a href="?page={{ page_obj.previous_page_number }}"><<<</a>
-            {% endif %}
-
-            {% for num in page_obj.paginator.page_range %}
-                {% if page_obj.number == num %}
-                    <strong>{{ num }}</strong>
-                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                    <a href="?page={{ num }}">{{ num }}</a>
-                {% endif %}
-            {% endfor %}
-
-            {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}">>>></a>
-                <a href="?page={{ page_obj.paginator.num_pages }}">Последняя</a>
-            {% endif %}
-        </div>
-    {% endif %}
-
-{% endblock content %}
+    <!-- Пагинация -->
+    {% include 'partials/pagination.html' %}
+{% endblock %}
