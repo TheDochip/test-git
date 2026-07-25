@@ -34,8 +34,12 @@ class Author(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
+    subscribers = models.ManyToManyField(User, related_name='subscribers_category')
+
     def __str__(self):
         return self.name
+    
+
 
 class Post(models.Model):
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
@@ -77,3 +81,12 @@ class Comment(models.Model):
     def dislike(self):
         self.rating -= 1
         self.save()
+
+
+class ActivationCode(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    code = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.user.username} - {self.code}'

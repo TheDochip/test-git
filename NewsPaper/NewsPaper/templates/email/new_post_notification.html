@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h2>Привет, {{ user.username }}!</h2>
+    <p>В категории <strong>"{{ category.name }}"</strong> появилась новая новость:</p>
+    <h3>{{ post.title }}</h3>
+    <p>{{ post.text|truncatechars:50 }}</p>
+    <p><a href="{{ request.scheme }}://{{ request.get_host }}{% url 'news_detail' post.id %}">Читать далее</a></p>
+    <br>
+    <p>С уважением,<br>News Portal</p>
+</body>
+</html>

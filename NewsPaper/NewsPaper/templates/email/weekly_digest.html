@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Здравствуйте, {{ user.username }}!</h1>
+    <p>Новые статьи за последнюю неделю (с {{ week_ago|date:"d.m.Y" }}):</p>
+
+    {% for post in posts %}
+        <hr>
+        <h2><a href="http://127.0.0.1:8000/news/{{ post.id }}/">{{ post.title }}</a></h2>
+        <p>{{ post.text|truncatewords:30 }}</p>
+        <p><small>{{ post.created_at|date:"d.m.Y H:i" }}</small></p>
+    {% empty %}
+        <p>Новых статей нет.</p>
+    {% endfor %}
+
+    <hr>
+    <p>С уважением, News Portal</p>
+</body>
+</html>
