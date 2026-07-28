@@ -16,6 +16,7 @@ from django.conf import settings
 from django.template.loader import render_to_string
 import uuid
 from django.contrib.auth.forms import UserCreationForm
+from django.utils import timezone
 
 class NewsList(ListView):
     model = Post
@@ -55,6 +56,12 @@ class NewsCreate(LoginRequiredMixin,PermissionRequiredMixin, CreateView):
     template_name = 'post_edit.html'
     success_url = reverse_lazy('news_list')
 
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.groups.filter(name='authors').exists():
+            messages.error(request, 'Только авторы могут создавать новости.')
+            return redirect('news_list')
+        return super().dispatch(request, *args, **kwargs)
+
     def form_valid(self, form):
         user = self.request.user
         author = user.author
@@ -63,7 +70,7 @@ class NewsCreate(LoginRequiredMixin,PermissionRequiredMixin, CreateView):
         news_today = Post.objects.filter(
             author=author,
             post_type='NW',
-            create_at__date=today,
+            created_at__date=today,
         ).count()
         if news_today >= 3:
             form.add_error(None, f'Вы можете публиковать не более 3 новостей в сутки')
@@ -76,7 +83,7 @@ class NewsCreate(LoginRequiredMixin,PermissionRequiredMixin, CreateView):
         form.save_m2m()
 
 
-        for category in post.category.all():
+        for category in post.categories.all():
             subscribers = category.subscribers.all()
             for user in subscribers:
                 html_massage = render_to_string('email/new_post_notification.html', {
@@ -93,11 +100,6 @@ class NewsCreate(LoginRequiredMixin,PermissionRequiredMixin, CreateView):
                 )
         return super().form_valid(form)
 
-    def dispatch(self, request, *args, **kwargs):
-        if not request.user.groups.filter(name='authors').exists():
-            messages.error(request, 'Только авторы могут создавать новости.')
-            return redirect('news_list')
-        return super().dispatch(request, *args, **kwargs)
 
 class NewsUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     permission_required = 'news.change_post'
@@ -169,7 +171,7 @@ def register(request):
                 html_message=html_message,
             )
 
-            return redirect(request, ' registration/activation_sent.html')
+            return redirect('registration/activation_sent.html')
         else:
             form = UserCreationForm()
 
