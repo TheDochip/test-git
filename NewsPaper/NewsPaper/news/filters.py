@@ -13,6 +13,26 @@ class PostFilter(django_filters.FilterSet):
         widget=forms.DateInput(attrs={'type': 'date'})
     )
 
+    created_at__lte = DateFilter(
+        field_name='created_at',
+        lookup_expr='date__lte',
+        label='Раньше даты',
+        widget=forms.DateInput(attrs={'type': 'date'})
+    )
+
+    category = ModelChoiceFilter(
+        field_name='category',
+        queryset=Category.objects.all(),
+        label='Категории'
+    )
+
+    post_type = ModelChoiceFilter(
+        field_name='post_type',
+        choises=Post.POST_TYPES,
+        label='Тип'
+    )
+
+
     class Meta:
         model = Post
-        fields = ['title', 'author__user__username', 'created_at']
+        fields = ['title', 'author__user__username', 'created_at', 'created_at__lte', 'category', 'post_type']

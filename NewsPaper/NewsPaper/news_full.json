@@ -1,0 +1,76 @@
+[
+{
+  "model": "news.author",
+  "pk": 1,
+  "fields": {
+    "user": 1,
+    "rating": 0
+  }
+},
+{
+  "model": "news.category",
+  "pk": 2,
+  "fields": {
+    "name": "Спорт",
+    "subscribers": []
+  }
+},
+{
+  "model": "news.category",
+  "pk": 3,
+  "fields": {
+    "name": "Политика",
+    "subscribers": []
+  }
+},
+{
+  "model": "news.category",
+  "pk": 4,
+  "fields": {
+    "name": "Наука",
+    "subscribers": []
+  }
+},
+{
+  "model": "news.category",
+  "pk": 5,
+  "fields": {
+    "name": "Культура",
+    "subscribers": []
+  }
+},
+{
+  "model": "news.category",
+  "pk": 6,
+  "fields": {
+    "name": "Технологии",
+    "subscribers": []
+  }
+},
+{
+  "model": "news.post",
+  "pk": 1,
+  "fields": {
+    "author": 1,
+    "post_type": "NW",
+    "created_at": "2026-08-05T12:07:34.799Z",
+    "title": "Чемпионат мира по футболу 2026",
+    "text": "Сборная России вышла в финал, обыграв Бразилию со счётом 3:2.",
+    "rating": 0,
+    "updated_at": "2026-08-05T12:07:34.799Z"
+  }
+},
+{
+  "model": "news.post",
+  "pk": 2,
+  "fields": {
+    "author": 1,
+    "post_type": "NW",
+    "created_at": "2026-08-05T12:07:34.808Z",
+    "title": "Новый iPhone 17 представлен официально",
+    "text": "Apple показала iPhone 17 с ИИ-чипом и камерой на 200 МП.",
+    "rating": 0,
+    "updated_at": "2026-08-05T12:07:34.808Z"
+  }
+}
+]

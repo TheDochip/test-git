@@ -1,0 +1,42 @@
+[
+{
+  "model": "news.category",
+  "pk": 2,
+  "fields": {
+    "name": "Спорт",
+    "subscribers": []
+  }
+},
+{
+  "model": "news.category",
+  "pk": 3,
+  "fields": {
+    "name": "Политика",
+    "subscribers": []
+  }
+},
+{
+  "model": "news.category",
+  "pk": 4,
+  "fields": {
+    "name": "Наука",
+    "subscribers": []
+  }
+},
+{
+  "model": "news.category",
+  "pk": 5,
+  "fields": {
+    "name": "Культура",
+    "subscribers": []
+  }
+},
+{
+  "model": "news.category",
+  "pk": 6,
+  "fields": {
+    "name": "Технологии",
+    "subscribers": []
+  }
+}
+]

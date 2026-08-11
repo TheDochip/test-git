@@ -28,7 +28,8 @@
         <hr>
     {% endif %}
 
-    {# Список новостей #}
+{% load cache %}
+{% cache 300 news_list request.GET.page %}
     {% for item in news %}
         <div class="card mb-3">
             <div class="card-body">
@@ -44,6 +45,7 @@
     {% empty %}
         <p>Новостей пока нет.</p>
     {% endfor %}
+{% endcache %}
 
     {# Пагинация #}
     {% if is_paginated %}

@@ -17,6 +17,9 @@ from django.template.loader import render_to_string
 import uuid
 from django.contrib.auth.forms import UserCreationForm
 from django.utils import timezone
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
+from django.core.cache import cache
 
 class NewsList(ListView):
     model = Post
@@ -39,6 +42,13 @@ class NewsDetail(DetailView):
     template_name = 'news_detail.html'
     context_object_name = 'news'
 
+    def get_cache_key(self, post):
+        return f'news_detail_{post.id}_{post.updated_at.timestamp()}'
+
+    @method_decorator(cache_page(300))
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
 class NewsSearch(FilterView):
     model = Post
     template_name = 'news_search.html'
@@ -47,7 +57,11 @@ class NewsSearch(FilterView):
     paginate_by = 10
 
     def get_queryset(self):
-        return Post.objects.filter(post_type='NW')
+        qs = super().get_queryset()
+        order_by = self.request.GET.get('order_by')
+        if order_by:
+            qs = qs.order_by(order_by)
+        return qs
 
 class NewsCreate(LoginRequiredMixin,PermissionRequiredMixin, CreateView):
     permission_required = 'news.add_post'
@@ -108,11 +122,21 @@ class NewsUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     template_name = 'post_edit.html'
     success_url = reverse_lazy('news_list')
 
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        cache.delete(f'news_detail_{self.object.id}')
+        return response
+
 class NewsDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     permission_required = 'news.delete_post'
     model = Post
     template_name = 'post_delete.html'
     success_url = reverse_lazy('news_list')
+
+    def delete(self, request, *args, **kwargs):
+        post = self.get_object()
+        cache.delete(f'news_detail_{posr.id}_*')
+        return super().delete(request, *args, **kwargs)
 
 class ArticleUpdate(LoginRequiredMixin, UpdateView):
     permission_required = 'news.change_post'

@@ -9,7 +9,8 @@
 </head>
 <body>
 
-    <!-- Навигация -->
+    {% load cache %}
+    {% cache 300 navbar %}
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="/">📰 News Portal</a>
@@ -49,6 +50,8 @@
             </div>
         </div>
     </nav>
+
+    {% endcache %}
 
     <!-- Основной контент -->
     <div class="container mt-4">
