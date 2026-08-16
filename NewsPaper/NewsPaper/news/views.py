@@ -6,11 +6,10 @@ from django_filters.views import FilterView
 from .forms import PostForm, ProfileForm
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.models import Group, User
 from django.contrib import messages
 from django.db import models
-from django.shortcuts import get_object_or_404, redirect
 from django.core.mail import send_mail
 from django.conf import settings
 from django.template.loader import render_to_string
@@ -20,6 +19,8 @@ from django.utils import timezone
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
 from django.core.cache import cache
+from django.utils.translation import gettext_lazy as _
+
 
 class NewsList(ListView):
     model = Post
@@ -33,7 +34,8 @@ class NewsList(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['categories'] = Category.objects.all()
+        context['welcome'] = _('Добро пожаловать в News Portal')
+        return context
         return context
 
 
@@ -235,3 +237,16 @@ class ProfileUpdate(LoginRequiredMixin, UpdateView):
     form_class = ProfileForm
     template_name = 'profile_update.html'
     success_url = reverse_lazy('news_list')
+
+
+@login_required
+def profile_settings(request):
+    profile = request.user.profile
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, instance=profile)
+        if form.is_valid():
+            form.save()
+            return redirect('profile_settings')
+    else:
+        form = ProfileForm(instance=profile)
+    return render(request, 'profile_settings.html', {'form': form})

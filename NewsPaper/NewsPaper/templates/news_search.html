@@ -1,52 +1,33 @@
 {% extends 'flatpages/default.html' %}
+{% load i18n %}
 {% load custom_filters %}
 
-{% block title %}Поиск новостей{% endblock %}
+{% block title %}{% trans "Поиск новостей" %}{% endblock %}
 
 {% block content %}
-    <h1>🔍 Поиск новостей</h1>
-
+    <h1 class="mb-4">🔍 {% trans "Поиск новостей" %}</h1>
 
     <form method="get" class="mb-4">
         {{ filter.form.as_p }}
-        <button type="submit">Найти</button>
-        <a href="{% url 'news_search' %}">Сбросить</a>
+        <button type="submit" class="btn btn-primary">{% trans "Найти" %}</button>
+        <a href="{% url 'news_search' %}" class="btn btn-secondary">{% trans "Сбросить" %}</a>
     </form>
 
+    {% for item in news %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <a href="{% url 'news_detail' item.id %}" class="text-decoration-none">
+                        {{ item.title|censor }}
+                    </a>
+                </h5>
+                <p class="card-text">{{ item.text|truncatechars:20|censor }}</p>
+                <p class="card-text"><small class="text-muted">📅 {{ item.created_at|date:'d.m.Y' }}</small></p>
+            </div>
+        </div>
+    {% empty %}
+        <p>{% trans "Новостей не найдено." %}</p>
+    {% endfor %}
 
-    <table>
-        <thead>
-            <tr>
-                <th><a href="?order_by=title&{{ request.GET.urlencode }}">Название</a></th>
-                <th><a href="?order_by=-created_at&{{ request.GET.urlencode }}">Дата</a></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in news %}
-            <tr>
-                <td>{{ item.title|censor }}</td>
-                <td>{{ item.created_at|date:'d.m.Y' }}</td>
-            </tr>
-            {% empty %}
-            <tr><td colspan="2">Новостей не найдено</td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-
-    {% if is_paginated %}
-        <nav>
-            <ul class="pagination">
-                {% if page_obj.has_previous %}
-                    <li><a href="?page=1&{{ request.GET.urlencode }}">Первая</a></li>
-                {% endif %}
-                {% for num in page_obj.paginator.page_range %}
-                    <li><a href="?page={{ num }}&{{ request.GET.urlencode }}">{{ num }}</a></li>
-                {% endfor %}
-                {% if page_obj.has_next %}
-                    <li><a href="?page={{ page_obj.next_page_number }}&{{ request.GET.urlencode }}">Следующая</a></li>
-                {% endif %}
-            </ul>
-        </nav>
-    {% endif %}
+    {% include 'partials/pagination.html' %}
 {% endblock %}

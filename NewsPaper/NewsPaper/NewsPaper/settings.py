@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 import os
 from pathlib import Path
+from django.utils.translation import gettext_lazy as _
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,137 +28,139 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-LOG_DIR = os.path.join(BASE_DIR, 'logs')
-if not os.path.exists(LOG_DIR):
-    os.makedirs(LOG_DIR)
-
-LOGGING = {    'version': 1,
-    'disable_existing_loggers': False,
-
-    'formatters': {
-        'console': {
-            'format': '%(asctime)s - %(levelname)s - %(message)s'
-        },
-        'console_warning': {
-            'format': '%(asctime)s - %(levelname)s - %(message)s - %(pathname)s'
-        },
-        'console_error': {
-            'format': '%(asctime)s - %(levelname)s - %(message)s - %(pathname)s - %(exc_info)s'
-        },
-        'general': {
-            'format': '%(asctime)s - %(levelname)s - %(module)s - %(message)s'
-        },
-        'errors': {
-            'format': '%(asctime)s - %(levelname)s - %(message)s - %(pathname)s - %(exc_info)s'
-        },
-        'security': {
-            'format': '%(asctime)s - %(levelname)s - %(module)s - %(message)s'
-        },
-        'email': {
-            'format': '%(asctime)s - %(levelname)s - %(message)s - %(pathname)s'
-        },
-    },
-
-    'filters': {
-        'require_debug_true': {
-            '()': 'django.utils.log.RequireDebugTrue',
-        },
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse',
-        },
-    },
-
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-            'filters': ['require_debug_true'],
-            'formatter': 'console',
-        },
-        'console_warning': {
-            'level': 'WARNING',
-            'class': 'logging.StreamHandler',
-            'filters': ['require_debug_true'],
-            'formatter': 'console_warning',
-        },
-        'console_error': {
-            'level': 'ERROR',
-            'class': 'logging.StreamHandler',
-            'filters': ['require_debug_true'],
-            'formatter': 'console_error',
-        },
-        'general': {
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(LOG_DIR, 'general.log'),
-            'filters': ['require_debug_false'],
-            'formatter': 'general',
-        },
-        'errors': {
-            'level': 'ERROR',
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(LOG_DIR, 'errors.log'),
-            'formatter': 'errors',
-        },
-        'security': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(LOG_DIR, 'security.log'),
-            'formatter': 'security',
-        },
-        'mail_admins': {
-            'level': 'ERROR',
-            'class': 'django.utils.log.AdminEmailHandler',
-            'filters': ['require_debug_false'],
-            'formatter': 'email',
-            'include_html': False,
-        },
-    },
-
-    'loggers': {
-        'django': {
-            'handlers': ['console', 'console_warning', 'console_error', 'general'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-        'django.request': {
-            'handlers': ['errors', 'mail_admins'],
-            'level': 'ERROR',
-            'propagate': False,
-        },
-        'django.server': {
-            'handlers': ['errors', 'mail_admins'],
-            'level': 'ERROR',
-            'propagate': False,
-        },
-        'django.template': {
-            'handlers': ['errors'],
-            'level': 'ERROR',
-            'propagate': False,
-        },
-        'django.db.backends': {
-            'handlers': ['errors'],
-            'level': 'ERROR',
-            'propagate': False,
-        },
-        'django.security': {
-            'handlers': ['security'],
-            'level': 'DEBUG',
-            'propagate': False,
-        },
-    },
-}
+# LOG_DIR = os.path.join(BASE_DIR, 'logs')
+# if not os.path.exists(LOG_DIR):
+#     os.makedirs(LOG_DIR)
+#
+# LOGGING = {    'version': 1,
+#     'disable_existing_loggers': False,
+#
+#     'formatters': {
+#         'console': {
+#             'format': '%(asctime)s - %(levelname)s - %(message)s'
+#         },
+#         'console_warning': {
+#             'format': '%(asctime)s - %(levelname)s - %(message)s - %(pathname)s'
+#         },
+#         'console_error': {
+#             'format': '%(asctime)s - %(levelname)s - %(message)s - %(pathname)s - %(exc_info)s'
+#         },
+#         'general': {
+#             'format': '%(asctime)s - %(levelname)s - %(module)s - %(message)s'
+#         },
+#         'errors': {
+#             'format': '%(asctime)s - %(levelname)s - %(message)s - %(pathname)s - %(exc_info)s'
+#         },
+#         'security': {
+#             'format': '%(asctime)s - %(levelname)s - %(module)s - %(message)s'
+#         },
+#         'email': {
+#             'format': '%(asctime)s - %(levelname)s - %(message)s - %(pathname)s'
+#         },
+#     },
+#
+#     'filters': {
+#         'require_debug_true': {
+#             '()': 'django.utils.log.RequireDebugTrue',
+#         },
+#         'require_debug_false': {
+#             '()': 'django.utils.log.RequireDebugFalse',
+#         },
+#     },
+#
+#     'handlers': {
+#         'console': {
+#             'level': 'DEBUG',
+#             'class': 'logging.StreamHandler',
+#             'filters': ['require_debug_true'],
+#             'formatter': 'console',
+#         },
+#         'console_warning': {
+#             'level': 'WARNING',
+#             'class': 'logging.StreamHandler',
+#             'filters': ['require_debug_true'],
+#             'formatter': 'console_warning',
+#         },
+#         'console_error': {
+#             'level': 'ERROR',
+#             'class': 'logging.StreamHandler',
+#             'filters': ['require_debug_true'],
+#             'formatter': 'console_error',
+#         },
+#         'general': {
+#             'level': 'INFO',
+#             'class': 'logging.FileHandler',
+#             'filename': os.path.join(LOG_DIR, 'general.log'),
+#             'filters': ['require_debug_false'],
+#             'formatter': 'general',
+#         },
+#         'errors': {
+#             'level': 'ERROR',
+#             'class': 'logging.FileHandler',
+#             'filename': os.path.join(LOG_DIR, 'errors.log'),
+#             'formatter': 'errors',
+#         },
+#         'security': {
+#             'level': 'DEBUG',
+#             'class': 'logging.FileHandler',
+#             'filename': os.path.join(LOG_DIR, 'security.log'),
+#             'formatter': 'security',
+#         },
+#         'mail_admins': {
+#             'level': 'ERROR',
+#             'class': 'django.utils.log.AdminEmailHandler',
+#             'filters': ['require_debug_false'],
+#             'formatter': 'email',
+#             'include_html': False,
+#         },
+#     },
+#
+#     'loggers': {
+#         'django': {
+#             'handlers': ['console', 'console_warning', 'console_error', 'general'],
+#             'level': 'DEBUG',
+#             'propagate': True,
+#         },
+#         'django.request': {
+#             'handlers': ['errors', 'mail_admins'],
+#             'level': 'ERROR',
+#             'propagate': False,
+#         },
+#         'django.server': {
+#             'handlers': ['errors', 'mail_admins'],
+#             'level': 'ERROR',
+#             'propagate': False,
+#         },
+#         'django.template': {
+#             'handlers': ['errors'],
+#             'level': 'ERROR',
+#             'propagate': False,
+#         },
+#         'django.db.backends': {
+#             'handlers': ['errors'],
+#             'level': 'ERROR',
+#             'propagate': False,
+#         },
+#         'django.security': {
+#             'handlers': ['security'],
+#             'level': 'DEBUG',
+#             'propagate': False,
+#         },
+#     },
+# }
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'modeltranslation',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'news',
     'accounts',
     'django_filters',
@@ -167,7 +170,19 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.yandex',
+
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ]
+}
+
 
 # allauth
 AUTHENTICATION_BACKENDS = [
@@ -177,7 +192,7 @@ AUTHENTICATION_BACKENDS = [
 
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/news/'
-ACCOUNT_LOGOUT_REDIRECT_URL = '/news/'
+ACCOUNT_REDIRECT_URL = '/news/'
 
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 ACCOUNT_UNIQUE_EMAIL = True
@@ -201,12 +216,25 @@ SOCIALACCOUNT_PROVIDERS = {
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
+    'news.middleware.TimezoneMiddleware',
+]
+
+LANGUAGE_CODE = 'ru'
+
+LANGUAGES = [
+    ('ru', 'Russian'),
+    ('en', 'English'),
+]
+
+LOCALE_PATHS = [
+    BASE_DIR / 'locale',
 ]
 
 ROOT_URLCONF = 'NewsPaper.urls'
@@ -221,7 +249,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'news.context_processors.author_status'
+                'news.context_processors.author_status',
+                'news.context_processors.user_theme'
             ],
         },
     },
@@ -268,7 +297,7 @@ LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 
 USE_I18N = True
-
+USE_L10N = True
 USE_TZ = True
 
 
@@ -277,6 +306,10 @@ USE_TZ = True
 
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
+
 
 SITE_ID = 1
 

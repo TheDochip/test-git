@@ -1,25 +1,25 @@
 from django.contrib import admin
-from .models import Post, category, Author, Subscriber
+from .models import Post, Category, Author, Subscriber
 
-@admin.site.register(Post)
+@admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ('id','title','author','post_type','created_at','rating')
-    list_filter = ('post_type','created_at', 'categories')
+    list_display = ('id', 'title', 'author', 'post_type', 'created_at', 'rating')
+    list_filter = ('post_type', 'created_at', 'categories')
     search_fields = ('title', 'text')
     ordering = ('-created_at',)
-    filter_horizontal = ('categories',)
+    # filter_horizontal = ('categories',)
 
-@admin.site.register(category)
+@admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('id','name')
-    list_filter = ('name',)
+    list_display = ('id', 'name')
+    search_fields = ('name',)
 
-@admin.site.register(Author)
+@admin.register(Author)
 class AuthorAdmin(admin.ModelAdmin):
-    list_display = ('id','user','rating')
-    list_filter = ('name_username',)
+    list_display = ('id', 'user', 'rating')
+    search_fields = ('user__username',)
 
-@admin.site.register(Subscriber)
+@admin.register(Subscriber)
 class SubscriberAdmin(admin.ModelAdmin):
-    list_display = ('id','user','category','subscribed_at')
+    list_display = ('id', 'user', 'category', 'subscribed_at')
     list_filter = ('category',)

@@ -1,38 +1,49 @@
 import django_filters
-from django_filters import DateFilter, CharFilter
+from django_filters import DateFilter, CharFilter, ModelChoiceFilter
 from django import forms
-from .models import Post
+from .models import Post, Category
+from django.utils.translation import gettext_lazy as _
 
 class PostFilter(django_filters.FilterSet):
-    title = CharFilter(field_name='title', lookup_expr='icontains', label='Название')
-    author__user__username = CharFilter(field_name='author__user__username', lookup_expr='icontains', label='Автор')
-    created_at = DateFilter(
-        field_name='created_at',
-        lookup_expr='date__gte',
-        label='Позже даты',
-        widget=forms.DateInput(attrs={'type': 'date'})
-    )
+    title = CharFilter(
+    field_name='title',
+    lookup_expr='icontains',
+    label=_('Название')
+)
 
-    created_at__lte = DateFilter(
-        field_name='created_at',
-        lookup_expr='date__lte',
-        label='Раньше даты',
-        widget=forms.DateInput(attrs={'type': 'date'})
-    )
+    author__user__username = CharFilter(
+    field_name='author__user__username',
+    lookup_expr='icontains',
+    label=_('Автор')
+)
+
+    created_at = DateFilter(
+    field_name='created_at',
+    lookup_expr='date__gte',
+    label=_('Позже даты'),
+    widget=forms.DateInput(attrs={'type': 'date'})
+)
+
+    created_at_lte = DateFilter(
+    field_name='created_at',
+    lookup_expr='date__lte',
+    label=_('Раньше даты'),
+    widget=forms.DateInput(attrs={'type': 'date'})
+)
 
     category = ModelChoiceFilter(
-        field_name='category',
-        queryset=Category.objects.all(),
-        label='Категории'
-    )
+    field_name='categories',
+    queryset=Category.objects.all(),
+    label=_('Категория')
+)
 
-    post_type = ModelChoiceFilter(
-        field_name='post_type',
-        choises=Post.POST_TYPES,
-        label='Тип'
-    )
+    post_type = django_filters.ChoiceFilter(
+    field_name='post_type',
+    choices=Post.POST_TYPES,
+    label=_('Тип')
+)
 
 
     class Meta:
         model = Post
-        fields = ['title', 'author__user__username', 'created_at', 'created_at__lte', 'category', 'post_type']
+        fields = ['title', 'author__user__username', 'created_at', 'created_at_lte', 'category', 'post_type']

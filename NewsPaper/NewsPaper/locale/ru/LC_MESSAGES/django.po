@@ -1,0 +1,120 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: News Portal\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-11 12:00+0000\n"
+"PO-Revision-Date: 2026-08-11 12:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: templates/news_list.html:3
+msgid "Все новости"
+msgstr "Все новости"
+
+#: templates/news_list.html:5
+msgid "Новостей пока нет."
+msgstr "Новостей пока нет."
+
+#: templates/news_detail.html:10
+msgid "Назад"
+msgstr "Назад"
+
+#: templates/news_search.html:3
+msgid "Поиск новостей"
+msgstr "Поиск новостей"
+
+#: templates/news_search.html:20
+msgid "Новостей не найдено."
+msgstr "Новостей не найдено."
+
+#: templates/post_edit.html:3
+msgid "Редактирование"
+msgstr "Редактирование"
+
+#: templates/post_edit.html:3
+msgid "Создание"
+msgstr "Создание"
+
+#: templates/post_edit.html:20
+msgid "Сохранить"
+msgstr "Сохранить"
+
+#: templates/post_edit.html:21
+msgid "Отмена"
+msgstr "Отмена"
+
+#: templates/post_delete.html:5
+msgid "Удаление"
+msgstr "Удаление"
+
+#: templates/post_delete.html:9
+msgid "Вы уверены, что хотите удалить новость"
+msgstr "Вы уверены, что хотите удалить новость"
+
+#: templates/post_delete.html:12
+msgid "Удалить"
+msgstr "Удалить"
+
+#: templates/partials/pagination.html:4
+msgid "Первая"
+msgstr "Первая"
+
+#: templates/partials/pagination.html:17
+msgid "Последняя"
+msgstr "Последняя"
+
+#: flatpages/default.html:3
+msgid "News Portal"
+msgstr "Новостной портал"
+
+#: flatpages/default.html:19
+msgid "Новости"
+msgstr "Новости"
+
+#: flatpages/default.html:20
+msgid "Поиск"
+msgstr "Поиск"
+
+#: flatpages/default.html:21
+msgid "Создать"
+msgstr "Создать"
+
+#: flatpages/default.html:45
+msgid "Выйти"
+msgstr "Выйти"
+
+#: flatpages/default.html:47
+msgid "Войти"
+msgstr "Войти"
+
+msgid "Название"
+msgstr "Название"
+
+msgid "Автор"
+msgstr "Автор"
+
+msgid "Позже даты"
+msgstr "Позже даты"
+
+msgid "Раньше даты"
+msgstr "Раньше даты"
+
+msgid "Категория"
+msgstr "Категория"
+
+msgid "Тип"
+msgstr "Тип"
+
+msgid "Поиск новостей"
+msgstr "Поиск новостей"
+
+msgid "Найти"
+msgstr "Найти"
+
+msgid "Сбросить"
+msgstr "Сбросить"

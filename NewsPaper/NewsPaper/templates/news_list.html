@@ -1,35 +1,11 @@
 {% extends 'flatpages/default.html' %}
 {% load custom_filters %}
 
-{% block title %}
-Все новости
-{% endblock title %}
+{% block title %}Все новости{% endblock %}
 
 {% block content %}
-    <h1>Все новости</h1>
+    <h1>📰 Все новости</h1>
 
-    {# Кнопка подписки/отписки для каждой категории #}
-    {% if user.is_authenticated %}
-        <div class="mt-4 mb-4">
-            <h4>📬 Подписка на категории</h4>
-            {% for category in categories %}
-                <div class="d-flex align-items-center gap-2 mb-1">
-                    <span>{{ category.name }}</span>
-                    {% if user in category.subscribers.all %}
-                        <a href="{% url 'unsubscribe' category.id %}" class="btn btn-sm btn-danger">Отписаться</a>
-                    {% else %}
-                        <a href="{% url 'subscribe' category.id %}" class="btn btn-sm btn-success">Подписаться</a>
-                    {% endif %}
-                </div>
-            {% empty %}
-                <p>Категорий пока нет.</p>
-            {% endfor %}
-        </div>
-        <hr>
-    {% endif %}
-
-{% load cache %}
-{% cache 300 news_list request.GET.page %}
     {% for item in news %}
         <div class="card mb-3">
             <div class="card-body">
@@ -38,16 +14,19 @@
                         {{ item.title|censor }}
                     </a>
                 </h5>
+                <p class="card-text">
+                    <small class="text-muted">
+                        📅 {{ item.created_at|date:'d.m.Y H:i' }}
+                    </small>
+                </p>
                 <p class="card-text">{{ item.text|truncatechars:20|censor }}</p>
-                <p class="card-text"><small class="text-muted">📅 {{ item.created_at|date:'d.m.Y' }}</small></p>
             </div>
         </div>
     {% empty %}
         <p>Новостей пока нет.</p>
     {% endfor %}
-{% endcache %}
 
-    {# Пагинация #}
+    <!-- Пагинация -->
     {% if is_paginated %}
         <nav>
             <ul class="pagination justify-content-center">

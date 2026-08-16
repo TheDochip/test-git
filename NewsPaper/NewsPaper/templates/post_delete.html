@@ -1,16 +1,18 @@
 {% extends 'flatpages/default.html' %}
+{% load i18n %}
+{% load custom_filters %}
 
-{% block title %}Удаление{% endblock %}
+{% block title %}{% trans "Удаление" %}{% endblock %}
 
 {% block content %}
     <div class="card">
         <div class="card-body">
-            <h1 class="card-title text-danger">Удаление</h1>
-            <p>Вы уверены, что хотите удалить новость <strong>{{ post.title|censor }}</strong>?</p>
+            <h1 class="card-title text-danger">{% trans "Удаление" %}</h1>
+            <p>{% trans "Вы уверены, что хотите удалить новость" %} <strong>{{ post.title|censor }}</strong>?</p>
             <form method="post">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-danger">Удалить</button>
-                <a href="{% url 'news_list' %}" class="btn btn-secondary">Отмена</a>
+                <button type="submit" class="btn btn-danger">{% trans "Удалить" %}</button>
+                <a href="{% url 'news_list' %}" class="btn btn-secondary">{% trans "Отмена" %}</a>
             </form>
         </div>
     </div>

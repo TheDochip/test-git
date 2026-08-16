@@ -7,9 +7,18 @@
     <div class="card">
         <div class="card-body">
             <h1 class="card-title">{{ news.title|censor }}</h1>
-            <p class="card-text"><small class="text-muted">📅 {{ news.created_at|date:'d.m.Y' }}</small></p>
+
+            <p class="card-text">
+                <small class="text-muted">
+                    📅 {{ news.created_at|date:'d.m.Y H:i' }}
+                </small>
+            </p>
+
+            <hr>
+
             <p class="card-text mt-3">{{ news.text|censor|linebreaks }}</p>
-            <a href="{% url 'news_list' %}" class="btn btn-secondary mt-3">← Назад</a>
+
+            <a href="{% url 'news_list' %}" class="btn btn-secondary mt-3">← Назад к новостям</a>
         </div>
     </div>
-{% endblock %}
+{% endblock content %}
