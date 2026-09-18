@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <p>Здравствуй, {{ user.username }}. Новая статья в твоём любимом разделе!</p>
+    <h2>{{ post.title }}</h2>
+    <p>{{ post.text|truncatechars:50 }}</p>
+    <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'news_detail' post.id %}">Читать далее</a>
+</body>
+</html>

@@ -1,0 +1,22 @@
+{% extends 'flatpages/default.html' %}
+{% load i18n %}
+
+{% block title %}
+    {% if post.pk %}{% trans "Редактирование" %}{% else %}{% trans "Создание" %}{% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-body">
+            <h1 class="card-title">
+                {% if post.pk %}{% trans "Редактирование" %}{% else %}{% trans "Создание" %}{% endif %}
+            </h1>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-success">{% trans "Сохранить" %}</button>
+                <a href="{% url 'news_list' %}" class="btn btn-secondary">{% trans "Отмена" %}</a>
+            </form>
+        </div>
+    </div>
+{% endblock %}

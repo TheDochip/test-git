@@ -1,0 +1,65 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %}Личный кабинет{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">👤 Личный кабинет</h4>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Имя пользователя:</div>
+                    <div class="col-sm-8">{{ user.username }}</div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Email:</div>
+                    <div class="col-sm-8">{{ user.email }}</div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Имя:</div>
+                    <div class="col-sm-8">{{ user.first_name|default:"Не указано" }}</div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Фамилия:</div>
+                    <div class="col-sm-8">{{ user.last_name|default:"Не указано" }}</div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Статус:</div>
+                    <div class="col-sm-8">
+                        {% if is_author %}
+                            <span class="badge bg-success">✅ Автор</span>
+                        {% else %}
+                            <span class="badge bg-secondary">📖 Читатель</span>
+                            <a href="{% url 'become_author' %}" class="btn btn-outline-primary btn-sm ms-2">Стать автором</a>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Дата регистрации:</div>
+                    <div class="col-sm-8">{{ user.date_joined|date:'d.m.Y' }}</div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-sm-4 fw-bold">Последний вход:</div>
+                    <div class="col-sm-8">{{ user.last_login|date:'d.m.Y H:i'|default:"Неизвестно" }}</div>
+                </div>
+
+                <hr>
+
+                <div class="d-flex justify-content-between mt-3">
+                    <a href="{% url 'news_list' %}" class="btn btn-secondary">← Назад к новостям</a>
+                    <a href="{% url 'account_logout' %}" class="btn btn-outline-danger">🚪 Выйти</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

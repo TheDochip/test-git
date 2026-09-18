@@ -1,0 +1,9 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %}Активация успешна{% endblock %}
+
+{% block content %}
+    <h2>✅ Активация выполнена!</h2>
+    <p>Добро пожаловать, {{ user.username }}! Теперь вы можете войти в систему.</p>
+    <a href="{% url 'login' %}" class="btn btn-primary">Войти</a>
+{% endblock %}

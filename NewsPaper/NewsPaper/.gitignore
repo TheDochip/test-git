@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+*.sqlite3
+
+# Django
+media/
+staticfiles/
+cache_dir/
+*.xml
+*.json
+
+# Env
+.env
+.env.local
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# System
+.DS_Store
+Thumbs.db
+
+# Virtual environments
+venv/
+venv_new/
+.venv/
+
+# Local settings
+settings_local.py

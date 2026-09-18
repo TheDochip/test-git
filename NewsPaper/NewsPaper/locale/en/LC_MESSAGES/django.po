@@ -1,0 +1,120 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: News Portal\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-11 12:00+0000\n"
+"PO-Revision-Date: 2026-08-11 12:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: templates/news_list.html:3
+msgid "Все новости"
+msgstr "All news"
+
+#: templates/news_list.html:5
+msgid "Новостей пока нет."
+msgstr "No news yet."
+
+#: templates/news_detail.html:10
+msgid "Назад"
+msgstr "Back"
+
+#: templates/news_search.html:3
+msgid "Поиск новостей"
+msgstr "Search news"
+
+#: templates/news_search.html:20
+msgid "Новостей не найдено."
+msgstr "No news found."
+
+#: templates/post_edit.html:3
+msgid "Редактирование"
+msgstr "Editing"
+
+#: templates/post_edit.html:3
+msgid "Создание"
+msgstr "Creation"
+
+#: templates/post_edit.html:20
+msgid "Сохранить"
+msgstr "Save"
+
+#: templates/post_edit.html:21
+msgid "Отмена"
+msgstr "Cancel"
+
+#: templates/post_delete.html:5
+msgid "Удаление"
+msgstr "Deletion"
+
+#: templates/post_delete.html:9
+msgid "Вы уверены, что хотите удалить новость"
+msgstr "Are you sure you want to delete the news"
+
+#: templates/post_delete.html:12
+msgid "Удалить"
+msgstr "Delete"
+
+#: templates/partials/pagination.html:4
+msgid "Первая"
+msgstr "First"
+
+#: templates/partials/pagination.html:17
+msgid "Последняя"
+msgstr "Last"
+
+#: flatpages/default.html:3
+msgid "News Portal"
+msgstr "News Portal"
+
+#: flatpages/default.html:19
+msgid "Новости"
+msgstr "News"
+
+#: flatpages/default.html:20
+msgid "Поиск"
+msgstr "Search"
+
+#: flatpages/default.html:21
+msgid "Создать"
+msgstr "Create"
+
+#: flatpages/default.html:45
+msgid "Выйти"
+msgstr "Logout"
+
+#: flatpages/default.html:47
+msgid "Войти"
+msgstr "Login"
+
+msgid "Название"
+msgstr "Title"
+
+msgid "Автор"
+msgstr "Author"
+
+msgid "Позже даты"
+msgstr "After date"
+
+msgid "Раньше даты"
+msgstr "Before date"
+
+msgid "Категория"
+msgstr "Category"
+
+msgid "Тип"
+msgstr "Type"
+
+msgid "Поиск новостей"
+msgstr "Search news"
+
+msgid "Найти"
+msgstr "Search"
+
+msgid "Сбросить"
+msgstr "Reset"
