@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}Нет доступа — Vibes{% endblock %}
+
+{% block content %}
+<div class="error-page">
+    <p class="error-code">Ошибка 403</p>
+    <h1 class="error-title">Нет доступа</h1>
+    <p class="narrow-text">Изменять и удалять публикации и комментарии может только их автор.</p>
+    <a href="{% url 'news_list' %}" class="button button--ghost">На главную</a>
+</div>
+{% endblock %}

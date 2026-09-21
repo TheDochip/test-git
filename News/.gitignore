@@ -1,0 +1,19 @@
+# Окружение
+venv/
+.venv/
+.env
+
+# Python
+__pycache__/
+*.pyc
+
+# Данные
+*.sqlite3
+media/
+staticfiles/
+
+# IDE
+.idea/
+.vscode/
+CHANGES.md
+FRONTEND.md

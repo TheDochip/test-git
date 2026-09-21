@@ -1,0 +1,24 @@
+{% load static %}<!DOCTYPE html>
+{# Шаблон отдаётся без контекста запроса, поэтому он самостоятельный и не наследует base.html #}
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ошибка сервера — Vibes</title>
+    <link rel="icon" href="{% static 'images/favicon.svg' %}" type="image/svg+xml">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <main class="main">
+        <div class="container">
+            <div class="error-page">
+                <a href="/" class="logo">Vibes</a>
+                <p class="error-code">Ошибка 500</p>
+                <h1 class="error-title">Что-то сломалось на нашей стороне</h1>
+                <p class="narrow-text">Мы уже знаем об ошибке. Обновите страницу через минуту.</p>
+                <a href="/" class="button button--ghost">На главную</a>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

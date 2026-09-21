@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Регистрация — Vibes{% endblock %}
+
+{% block content %}
+<div class="narrow">
+    <header class="narrow-head">
+        <h1 class="narrow-title">Регистрация</h1>
+        <p class="narrow-text">Читать можно и без аккаунта. Он нужен, чтобы писать, комментировать и ставить реакции.</p>
+    </header>
+
+    <form method="post" class="form">
+        {% csrf_token %}
+        {% include 'news/_form_fields.html' %}
+        <button type="submit" class="button button--block">Продолжить</button>
+    </form>
+
+    <div class="narrow-footer">
+        <span>Уже есть аккаунт? <a href="{% url 'login' %}" class="link">Войдите</a></span>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% if is_paginated %}
+    <nav class="pagination" aria-label="Страницы">
+        {% if page_obj.has_previous %}
+            <a class="button button--ghost" href="?{% if filter_querystring %}{{ filter_querystring }}&{% endif %}page={{ page_obj.previous_page_number }}" rel="prev">Назад</a>
+        {% endif %}
+
+        <span>{{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+
+        {% if page_obj.has_next %}
+            <a class="button button--ghost" href="?{% if filter_querystring %}{{ filter_querystring }}&{% endif %}page={{ page_obj.next_page_number }}" rel="next">Дальше</a>
+        {% endif %}
+    </nav>
+{% endif %}

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Профиль — Vibes{% endblock %}
+
+{% block content %}
+<div class="narrow narrow--wide">
+    <header class="narrow-head">
+        <h1 class="narrow-title">Профиль</h1>
+        <p class="narrow-text">Так вас видят другие читатели.</p>
+    </header>
+
+    <form method="post" enctype="multipart/form-data" class="form">
+        {% csrf_token %}
+        {% include 'news/_form_fields.html' %}
+
+        <div class="form-actions">
+            <button type="submit" class="button">Сохранить</button>
+            <a href="{% url 'profile' user.username %}" class="button button--ghost">Отмена</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

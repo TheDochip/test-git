@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+{% load news_extras %}
+
+{% block title %}{{ object.title }} — Vibes{% endblock %}
+{% block description %}{{ object.preview }}{% endblock %}
+{% block og_title %}{{ object.title }}{% endblock %}
+{% block og_type %}article{% endblock %}
+{% block og_extra %}
+    <meta property="og:description" content="{{ object.preview }}">
+    {% if object.cover %}<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ object.cover.url }}">{% endif %}
+{% endblock %}
+
+{% block content %}
+<article>
+
+    <header class="article-head">
+        <a href="{% url 'news_list' %}?category={{ object.category_id }}" class="category-label">{{ object.category }}</a>
+
+        <h1 class="article-title">{{ object.title }}</h1>
+
+        <div class="article-byline">
+            {% if object.author %}
+                <a href="{% url 'profile' object.author.username %}" class="article-author">
+                    {% include 'news/_avatar.html' with person=object.author %}
+                    {{ object.author.username }}
+                </a>
+            {% endif %}
+
+            <time datetime="{{ object.created_at|date:'c' }}">{{ object.created_at|smart_date }}</time>
+
+            <span class="meta-item">
+                {% include 'news/_icon.html' with name='clock' small=True %}
+                {{ object.reading_minutes }} мин
+            </span>
+
+            {% if request.user == object.author %}
+                <div class="owner-actions">
+                    <a href="{% url 'post_edit' object.pk %}" class="button button--ghost button--small">Редактировать</a>
+                    <a href="{% url 'post_delete' object.pk %}" class="button button--ghost button--small">Удалить</a>
+                </div>
+            {% endif %}
+        </div>
+    </header>
+
+    {% if object.cover %}
+        <figure class="article-cover">
+            <img src="{{ object.cover.url }}" alt="">
+        </figure>
+    {% endif %}
+
+    <div class="article-body">
+        {% with blocks=object.blocks.all %}
+            {% if blocks %}
+                {% for block in blocks %}
+
+                    {% if block.block_type == 'text' %}
+                        <div class="block-text">{{ block.content|safe }}</div>
+
+                    {% elif block.block_type == 'image' and block.file %}
+                        <figure class="block-image">
+                            <img src="{{ block.file.url }}" alt="" loading="lazy">
+                        </figure>
+
+                    {% elif block.block_type == 'video' and block.file %}
+                        <div class="block-video">
+                            <video controls preload="metadata">
+                                <source src="{{ block.file.url }}">
+                                Браузер не может показать это видео.
+                                <a href="{{ block.file.url }}">Скачать файл</a>.
+                            </video>
+                        </div>
+
+                    {% elif block.block_type == 'file' and block.file %}
+                        <a href="{{ block.file.url }}" class="block-card" download>
+                            <span class="block-card-icon">{% include 'news/_icon.html' with name='file' %}</span>
+                            <span class="block-card-text">
+                                <span class="block-card-title">{{ block.file.name|filename }}</span>
+                                <span class="block-card-sub">Скачать файл</span>
+                            </span>
+                        </a>
+
+                    {% elif block.block_type == 'link' and block.content|http_url %}
+                        <a href="{{ block.content|http_url }}" class="block-card" target="_blank" rel="noopener noreferrer nofollow">
+                            <span class="block-card-icon">{% include 'news/_icon.html' with name='link' %}</span>
+                            <span class="block-card-text">
+                                <span class="block-card-title">{{ block.content|link_domain }}</span>
+                                <span class="block-card-sub">{{ block.content }}</span>
+                            </span>
+                        </a>
+
+                    {% elif block.block_type == 'quote' %}
+                        <blockquote class="block-quote">{{ block.content|linebreaksbr }}</blockquote>
+
+                    {% elif block.block_type == 'divider' %}
+                        <hr class="block-divider">
+
+                    {% endif %}
+
+                {% endfor %}
+            {% else %}
+                <div class="block-text">{{ object.content|linebreaks }}</div>
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <footer class="article-footer">
+        <form method="post" action="{% url 'post_like' object.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="reaction" aria-pressed="{% if reaction and reaction.is_like %}true{% else %}false{% endif %}" title="Нравится">
+                {% include 'news/_icon.html' with name='like' small=True %}
+                <span class="visually-hidden">Нравится:</span>
+                {{ object.likes }}
+            </button>
+        </form>
+
+        <form method="post" action="{% url 'post_dislike' object.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="reaction" aria-pressed="{% if reaction and not reaction.is_like %}true{% else %}false{% endif %}" title="Не нравится">
+                {% include 'news/_icon.html' with name='dislike' small=True %}
+                <span class="visually-hidden">Не нравится:</span>
+                {{ object.dislikes }}
+            </button>
+        </form>
+
+        {% if object.updated_at|date:'YmdHi' != object.created_at|date:'YmdHi' %}
+            <span class="meta article-category">Обновлено {{ object.updated_at|smart_date }}</span>
+        {% endif %}
+    </footer>
+
+</article>
+
+
+<section class="comments" id="comments" aria-labelledby="comments-title">
+    {% with comments=object.comments.all %}
+        <h2 class="comments-title" id="comments-title">
+            Комментарии
+            {% if comments %}<span class="comments-count">{{ comments|length }}</span>{% endif %}
+        </h2>
+
+        {% if user.is_authenticated %}
+            <form method="post" action="{% url 'post_comment' object.pk %}" class="form comment-form">
+                {% csrf_token %}
+                <div class="field">
+                    <label class="visually-hidden" for="{{ comment_form.content.id_for_label }}">Комментарий</label>
+                    {{ comment_form.content }}
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="button">Отправить</button>
+                </div>
+            </form>
+        {% else %}
+            <p class="comment-login">
+                <a href="{% url 'login' %}?next={{ request.path|urlencode }}%23comments" class="link">Войдите</a>,
+                чтобы оставить комментарий.
+            </p>
+        {% endif %}
+
+        <div class="comment-list">
+            {% for comment in comments %}
+                <article class="comment" id="comment-{{ comment.pk }}">
+                    {% include 'news/_avatar.html' with person=comment.author %}
+
+                    <div>
+                        <div class="comment-head">
+                            <a href="{% url 'profile' comment.author.username %}" class="comment-author">{{ comment.author.username }}</a>
+                            <time class="comment-date" datetime="{{ comment.created_at|date:'c' }}">{{ comment.created_at|smart_date }}</time>
+                        </div>
+
+                        <div class="comment-text">{{ comment.content|linebreaks }}</div>
+
+                        {% if request.user == comment.author %}
+                            <div class="comment-actions">
+                                <a href="{% url 'comment_edit' comment.pk %}" class="text-button">Изменить</a>
+                                <a href="{% url 'comment_delete' comment.pk %}" class="text-button text-button--danger">Удалить</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </article>
+            {% empty %}
+                <p class="muted">Комментариев пока нет.</p>
+            {% endfor %}
+        </div>
+    {% endwith %}
+</section>
+
+
+{% if more_posts %}
+    <section class="more" aria-labelledby="more-title">
+        <div class="section-head">
+            <h2 class="section-title" id="more-title">Ещё в разделе «{{ object.category }}»</h2>
+            <a href="{% url 'news_list' %}?category={{ object.category_id }}" class="link section-link">Все публикации раздела</a>
+        </div>
+        <div class="post-grid">
+            {% for post in more_posts %}
+                {% include 'news/_post_card.html' %}
+            {% endfor %}
+        </div>
+    </section>
+{% endif %}
+{% endblock %}

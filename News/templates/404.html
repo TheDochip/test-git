@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Страница не найдена — Vibes{% endblock %}
+
+{% block content %}
+<div class="error-page">
+    <p class="error-code">Ошибка 404</p>
+    <h1 class="error-title">Такой страницы нет</h1>
+    <p class="narrow-text">Возможно, публикацию удалили или в адресе опечатка. Попробуйте найти нужное через поиск.</p>
+
+    <form method="get" action="{% url 'news_search' %}" class="form search-form search-form--inline" role="search">
+        <div class="field">
+            <label class="visually-hidden" for="id_404_q">Поиск</label>
+            <input type="search" id="id_404_q" name="q" placeholder="Что ищем?">
+        </div>
+        <button type="submit" class="button">Найти</button>
+    </form>
+
+    <a href="{% url 'news_list' %}" class="link">На главную</a>
+</div>
+{% endblock %}

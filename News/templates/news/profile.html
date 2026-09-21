@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ profile_user.username }} — Vibes{% endblock %}
+
+{% block content %}
+<header class="profile-head">
+    {% include 'news/_avatar.html' with person=profile_user large=True %}
+
+    <div class="profile-info">
+        <h1 class="profile-name">{{ profile_user.username }}</h1>
+
+        {% if profile.bio %}
+            <p class="profile-bio">{{ profile.bio|linebreaksbr }}</p>
+        {% endif %}
+
+        <div class="meta">
+            <span class="meta-item">На Vibes с {{ profile_user.date_joined|date:'E Y' }}</span>
+            <span class="meta-item">Публикаций: {{ posts|length }}</span>
+            {% if is_owner and profile_user.email %}
+                {# email видит только владелец #}
+                <span class="meta-item">{{ profile_user.email }}</span>
+            {% endif %}
+        </div>
+
+        {% if is_owner %}
+            <div class="profile-actions">
+                <a href="{% url 'profile_edit' user.username %}" class="button button--ghost button--small">Редактировать профиль</a>
+                <a href="{% url 'subscriptions' user.username %}" class="button button--ghost button--small">Подписки</a>
+                <a href="{% url 'password_change' %}" class="button button--ghost button--small">Сменить пароль</a>
+            </div>
+        {% endif %}
+    </div>
+</header>
+
+{% if profile.show_subscriptions or is_owner %}
+    {% with categories=profile_user.subscribed_categories.all %}
+        {% if categories %}
+            <section class="profile-subscriptions" aria-labelledby="subs-title">
+                <div class="section-head">
+                    <h2 class="section-title" id="subs-title">Подписки</h2>
+                </div>
+                <div class="chips">
+                    {% for category in categories %}
+                        <a href="{% url 'news_list' %}?category={{ category.pk }}" class="chip">{{ category.name }}</a>
+                    {% endfor %}
+                </div>
+            </section>
+        {% endif %}
+    {% endwith %}
+{% endif %}
+
+<section aria-labelledby="posts-title">
+    <div class="section-head">
+        <h2 class="section-title" id="posts-title">{% if is_owner %}Мои публикации{% else %}Публикации{% endif %}</h2>
+        {% if is_owner and posts %}
+            <a href="{% url 'post_create' %}" class="button button--small">Написать</a>
+        {% endif %}
+    </div>
+
+    {% if posts %}
+        <div class="post-grid">
+            {% for post in posts %}
+                {% include 'news/_post_card.html' with hide_author=True %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty">
+            {% if is_owner %}
+                <p class="empty-title">У вас пока нет публикаций</p>
+                <p>Расскажите о том, что видите вокруг. Первая публикация займёт пару минут.</p>
+                <a href="{% url 'post_create' %}" class="button">Написать публикацию</a>
+            {% else %}
+                <p>{{ profile_user.username }} пока ничего не опубликовал.</p>
+            {% endif %}
+        </div>
+    {% endif %}
+</section>
+{% endblock %}

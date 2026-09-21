@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Удалить комментарий — Vibes{% endblock %}
+
+{% block content %}
+<div class="narrow">
+    <header class="narrow-head">
+        <h1 class="narrow-title">Удалить комментарий?</h1>
+    </header>
+
+    <p class="quote-box">{{ object.content|truncatechars:240 }}</p>
+
+    <form method="post" class="form-actions">
+        {% csrf_token %}
+        <button type="submit" class="button button--danger">Удалить</button>
+        <a href="{{ object.post.get_absolute_url }}#comment-{{ object.pk }}" class="button button--ghost">Отмена</a>
+    </form>
+</div>
+{% endblock %}

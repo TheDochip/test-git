@@ -1,0 +1,116 @@
+{% load static %}<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>{% block title %}Vibes{% endblock %}</title>
+    <meta name="description" content="{% block description %}Vibes — публикации авторов о том, что происходит вокруг.{% endblock %}">
+
+    <meta property="og:site_name" content="Vibes">
+    <meta property="og:title" content="{% block og_title %}Vibes{% endblock %}">
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+    {% block og_extra %}{% endblock %}
+
+    <link rel="icon" href="{% static 'images/favicon.svg' %}" type="image/svg+xml">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,700;1,7..72,400;1,7..72,700&display=swap">
+
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    {% block head %}{% endblock %}
+</head>
+
+<body>
+    <a class="skip-link" href="#content">Перейти к содержимому</a>
+
+    <header class="site-header" data-header>
+        <div class="container header-bar">
+            <a href="{% url 'news_list' %}" class="logo">Vibes</a>
+
+            <button type="button" class="icon-button menu-toggle" data-menu-toggle aria-expanded="false" aria-controls="header-actions">
+                <span class="visually-hidden">Меню</span>
+                <span class="menu-icon-open">{% include 'news/_icon.html' with name='menu' %}</span>
+                <span class="menu-icon-close">{% include 'news/_icon.html' with name='close' %}</span>
+            </button>
+
+            <nav class="header-actions" id="header-actions" aria-label="Основное меню">
+                <a href="{% url 'news_search' %}" class="icon-button" title="Поиск">
+                    {% include 'news/_icon.html' with name='search' %}
+                    <span class="header-search-label">Поиск</span>
+                </a>
+
+                {% if user.is_authenticated %}
+                    <a href="{% url 'profile' user.username %}" class="header-link header-user">
+                        {% include 'news/_avatar.html' with person=user %}
+                        {{ user.username }}
+                    </a>
+                    <form method="post" action="{% url 'logout' %}" class="logout-form">
+                        {% csrf_token %}
+                        <button type="submit" class="header-link header-button">Выйти</button>
+                    </form>
+                    <a href="{% url 'post_create' %}" class="button">
+                        {% include 'news/_icon.html' with name='pen' small=True %}
+                        Написать
+                    </a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="header-link">Войти</a>
+                    <a href="{% url 'register' %}" class="button">Зарегистрироваться</a>
+                {% endif %}
+            </nav>
+        </div>
+
+        {% if nav_categories %}
+            <nav class="category-nav" aria-label="Категории">
+                <div class="container">
+                    <ul class="category-nav-list">
+                        <li>
+                            <a href="{% url 'news_list' %}" class="category-nav-link"
+                               {% if request.resolver_match.url_name == 'news_list' and not nav_current_category %}aria-current="page"{% endif %}>Все</a>
+                        </li>
+                        {% for category in nav_categories %}
+                            <li>
+                                <a href="{% url 'news_list' %}?category={{ category.pk }}" class="category-nav-link"
+                                   {% if nav_current_category == category.pk|stringformat:'s' %}aria-current="page"{% endif %}>{{ category.name }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </nav>
+        {% endif %}
+    </header>
+
+    <main class="main" id="content">
+        <div class="container">
+            {% if messages %}
+                <div class="messages" role="status">
+                    {% for message in messages %}
+                        <div class="message message--{{ message.tags|default:'info' }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-bar">
+            <a href="{% url 'news_list' %}" class="logo">Vibes</a>
+            <span>© {% now 'Y' %}</span>
+            <nav class="footer-nav" aria-label="Дополнительно">
+                <a href="{% url 'news_search' %}">Поиск</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'post_create' %}">Написать</a>
+                {% else %}
+                    <a href="{% url 'register' %}">Стать автором</a>
+                {% endif %}
+            </nav>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/site.js' %}" defer></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Вход — Vibes{% endblock %}
+
+{% block content %}
+<div class="narrow">
+    <header class="narrow-head">
+        <h1 class="narrow-title">Вход</h1>
+    </header>
+
+    <form method="post" class="form">
+        {% csrf_token %}
+        {% include 'news/_form_fields.html' %}
+        <input type="hidden" name="next" value="{{ next }}">
+        <button type="submit" class="button button--block">Войти</button>
+    </form>
+
+    <div class="narrow-footer">
+        <a href="{% url 'password_reset' %}" class="link">Забыли пароль?</a>
+        <span>Нет аккаунта? <a href="{% url 'register' %}" class="link">Зарегистрируйтесь</a></span>
+    </div>
+</div>
+{% endblock %}

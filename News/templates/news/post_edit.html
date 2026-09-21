@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{% if object %}Редактирование — {{ object.title }}{% else %}Новая публикация{% endif %} — Vibes{% endblock %}
+
+{% block content %}
+<form method="post" enctype="multipart/form-data" class="form editor" id="post-editor" data-editor>
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+        <div class="form-errors" role="alert">{{ form.non_field_errors }}</div>
+    {% endif %}
+
+    <div class="field editor-title">
+        <label class="visually-hidden" for="{{ form.title.id_for_label }}">Название</label>
+        <textarea name="{{ form.title.html_name }}" id="{{ form.title.id_for_label }}" rows="1"
+                  maxlength="255" required placeholder="Заголовок публикации"
+                  data-autosize>{{ form.title.value|default:'' }}</textarea>
+        {% if form.title.errors %}<div class="field-errors">{{ form.title.errors }}</div>{% endif %}
+    </div>
+
+    <div class="editor-meta">
+        {% include 'news/_field.html' with field=form.category %}
+        {% include 'news/_field.html' with field=form.cover %}
+    </div>
+
+    <section class="field" aria-labelledby="blocks-title">
+        <h2 class="editor-section-title" id="blocks-title">Содержание</h2>
+
+        <div class="editor-blocks" data-blocks></div>
+
+        <p class="editor-empty" data-blocks-empty>
+            Публикация собирается из блоков. Начните с текста — кнопки ниже.
+        </p>
+
+        <div class="add-block" role="group" aria-label="Добавить блок">
+            <span class="add-block-label">Добавить:</span>
+            <button type="button" class="button button--ghost button--small" data-add-block="text">Текст</button>
+            <button type="button" class="button button--ghost button--small" data-add-block="image">Изображение</button>
+            <button type="button" class="button button--ghost button--small" data-add-block="video">Видео</button>
+            <button type="button" class="button button--ghost button--small" data-add-block="file">Файл</button>
+            <button type="button" class="button button--ghost button--small" data-add-block="link">Ссылка</button>
+            <button type="button" class="button button--ghost button--small" data-add-block="quote">Цитата</button>
+            <button type="button" class="button button--ghost button--small" data-add-block="divider">Разделитель</button>
+        </div>
+    </section>
+
+    <div class="editor-bar">
+        <a href="{% if object %}{{ object.get_absolute_url }}{% else %}{% url 'news_list' %}{% endif %}" class="button button--ghost">Отмена</a>
+        <button type="submit" class="button">{% if object %}Сохранить изменения{% else %}Опубликовать{% endif %}</button>
+    </div>
+</form>
+
+{{ existing_blocks|json_script:'existing-blocks-data' }}
+
+<template id="eblock-template">
+    <article class="eblock">
+        <header class="eblock-head">
+            <span class="eblock-name" data-block-name></span>
+            <button type="button" class="icon-button" data-action="up" title="Выше">
+                <span class="visually-hidden">Переместить выше</span>
+                {% include 'news/_icon.html' with name='up' small=True %}
+            </button>
+            <button type="button" class="icon-button" data-action="down" title="Ниже" data-flip>
+                <span class="visually-hidden">Переместить ниже</span>
+                {% include 'news/_icon.html' with name='up' small=True %}
+            </button>
+            <button type="button" class="icon-button" data-action="delete" title="Удалить блок">
+                <span class="visually-hidden">Удалить блок</span>
+                {% include 'news/_icon.html' with name='close' small=True %}
+            </button>
+        </header>
+        <div class="eblock-body" data-block-body></div>
+    </article>
+</template>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'js/editor.js' %}" defer></script>
+{% endblock %}

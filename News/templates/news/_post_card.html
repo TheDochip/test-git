@@ -1,0 +1,34 @@
+{% load news_extras %}
+{# Карточка публикации. Параметры: post, wide (горизонтальная), hide_author #}
+<article class="card{% if not post.cover %} card--text{% endif %}{% if wide %} card--wide{% endif %}">
+    {% if post.cover %}
+        <a href="{{ post.get_absolute_url }}" class="card-media" tabindex="-1" aria-hidden="true">
+            <img src="{{ post.cover.url }}" alt="" loading="lazy">
+        </a>
+    {% endif %}
+
+    <div class="card-body">
+        <a href="{% url 'news_list' %}?category={{ post.category_id }}" class="category-label">{{ post.category }}</a>
+
+        <h3 class="card-title">
+            <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+        </h3>
+
+        {% with preview=post.preview %}
+            {% if preview %}<p class="card-preview">{{ preview }}</p>{% endif %}
+        {% endwith %}
+
+        <div class="meta">
+            {% if post.author and not hide_author %}
+                <a href="{% url 'profile' post.author.username %}" class="meta-item">{{ post.author.username }}</a>
+            {% endif %}
+            <time class="meta-item" datetime="{{ post.created_at|date:'c' }}">{{ post.created_at|smart_date }}</time>
+            {% if post.comment_count %}
+                <span class="meta-item" title="Комментарии">
+                    {% include 'news/_icon.html' with name='comment' small=True %}
+                    {{ post.comment_count }}
+                </span>
+            {% endif %}
+        </div>
+    </div>
+</article>

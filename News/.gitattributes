@@ -1,0 +1,6 @@
+# Единые окончания строк в репозитории, на Windows git сам вернёт CRLF в рабочую папку.
+* text=auto
+*.png binary
+*.jpg binary
+*.gif binary
+*.webp binary

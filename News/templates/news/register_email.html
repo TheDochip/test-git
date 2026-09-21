@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Email — Vibes{% endblock %}
+
+{% block content %}
+<div class="narrow">
+    <header class="narrow-head">
+        <h1 class="narrow-title">Добавить email?</h1>
+        <p class="narrow-text">
+            По email можно восстановить забытый пароль. Без него вернуть доступ к аккаунту не получится.
+        </p>
+    </header>
+
+    <div class="form">
+        <a href="{% url 'register_email_add' %}" class="button button--block">Добавить email</a>
+
+        <form method="post" action="{% url 'register_email_skip' %}">
+            {% csrf_token %}
+            <button type="submit" class="button button--ghost button--block">Пропустить и создать аккаунт</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

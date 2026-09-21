@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Удалить публикацию — Vibes{% endblock %}
+
+{% block content %}
+<div class="narrow">
+    <header class="narrow-head">
+        <h1 class="narrow-title">Удалить публикацию?</h1>
+        <p class="narrow-text">«{{ object.title }}» исчезнет вместе с комментариями и реакциями. Отменить это нельзя.</p>
+    </header>
+
+    <form method="post" class="form-actions">
+        {% csrf_token %}
+        <button type="submit" class="button button--danger">Удалить</button>
+        <a href="{{ object.get_absolute_url }}" class="button button--ghost">Отмена</a>
+    </form>
+</div>
+{% endblock %}

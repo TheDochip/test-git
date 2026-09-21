@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Подписки — Vibes{% endblock %}
+
+{% block content %}
+<div class="narrow narrow--wide">
+    <header class="narrow-head">
+        <h1 class="narrow-title">Подписки</h1>
+        <p class="narrow-text">Отметьте разделы, которые вам интересны.</p>
+    </header>
+
+    <form method="post" class="form">
+        {% csrf_token %}
+
+        {% if form.categories.field.queryset.exists %}
+            <fieldset class="field choice-chips">
+                <legend class="visually-hidden">Категории</legend>
+                {{ form.categories }}
+            </fieldset>
+        {% else %}
+            <p class="muted">Разделов пока нет.</p>
+        {% endif %}
+
+        <div class="form-actions">
+            <button type="submit" class="button">Сохранить</button>
+            <a href="{% url 'profile' user.username %}" class="button button--ghost">Отмена</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

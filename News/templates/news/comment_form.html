@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Изменить комментарий — Vibes{% endblock %}
+
+{% block content %}
+<div class="narrow narrow--wide">
+    <header class="narrow-head">
+        <h1 class="narrow-title">Изменить комментарий</h1>
+        <p class="narrow-text">
+            К публикации <a href="{{ object.post.get_absolute_url }}" class="link">«{{ object.post.title }}»</a>
+        </p>
+    </header>
+
+    <form method="post" class="form">
+        {% csrf_token %}
+        {% include 'news/_form_fields.html' %}
+
+        <div class="form-actions">
+            <button type="submit" class="button">Сохранить</button>
+            <a href="{{ object.post.get_absolute_url }}#comment-{{ object.pk }}" class="button button--ghost">Отмена</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

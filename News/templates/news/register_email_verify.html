@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Подтверждение email — Vibes{% endblock %}
+
+{% block content %}
+<div class="narrow">
+    <header class="narrow-head">
+        <h1 class="narrow-title">Введите код</h1>
+        <p class="narrow-text">Мы отправили его на {{ email }}. Проверьте папку «Спам», если письма нет.</p>
+    </header>
+
+    <form method="post" class="form">
+        {% csrf_token %}
+        {% include 'news/_form_fields.html' %}
+        <button type="submit" class="button button--block">Подтвердить</button>
+    </form>
+
+    <div class="narrow-footer">
+        <form method="post" action="{% url 'register_email_resend' %}">
+            {% csrf_token %}
+            <button type="submit" class="text-button link-button">Отправить код ещё раз</button>
+        </form>
+        <a href="{% url 'register_email_add' %}" class="link">Указать другой email</a>
+    </div>
+</div>
+{% endblock %}

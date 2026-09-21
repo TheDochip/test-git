@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}Поиск — Vibes{% endblock %}
+
+{% block content %}
+
+<header class="page-head">
+    <h1 class="page-title">Поиск</h1>
+</header>
+
+<form method="get" action="{% url 'news_search' %}" class="form search-form" role="search">
+    <div class="field">
+        <label class="field-label" for="id_q">Что ищем</label>
+        <input type="search" id="id_q" name="q" value="{{ request.GET.q|default:'' }}"
+               placeholder="Слово из заголовка или текста" autofocus>
+    </div>
+
+    <div class="field">
+        <label class="field-label" for="id_category">Категория</label>
+        <select id="id_category" name="category">
+            <option value="">Все</option>
+            {% for category in categories %}
+                <option value="{{ category.id }}" {% if request.GET.category == category.id|stringformat:'s' %}selected{% endif %}>{{ category.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="field">
+        <label class="field-label" for="id_date_from">С даты</label>
+        <input type="date" id="id_date_from" name="date_from" value="{{ request.GET.date_from|default:'' }}">
+    </div>
+
+    <div class="field">
+        <label class="field-label" for="id_date_to">По дату</label>
+        <input type="date" id="id_date_to" name="date_to" value="{{ request.GET.date_to|default:'' }}">
+    </div>
+
+    <button type="submit" class="button">Найти</button>
+</form>
+
+{% if request.GET.q or request.GET.category or request.GET.date_from or request.GET.date_to %}
+    {% if posts %}
+        <p class="search-summary">
+            Найдено: {{ paginator.count }}.
+            <a href="{% url 'news_search' %}" class="link">Сбросить фильтры</a>
+        </p>
+
+        <div class="post-grid">
+            {% for post in posts %}
+                {% include 'news/_post_card.html' %}
+            {% endfor %}
+        </div>
+
+        {% include 'news/_pagination.html' %}
+    {% else %}
+        <div class="empty">
+            <p class="empty-title">Ничего не нашлось</p>
+            <p>Попробуйте другое слово, уберите категорию или расширьте диапазон дат.</p>
+            <a href="{% url 'news_search' %}" class="button button--ghost">Сбросить фильтры</a>
+        </div>
+    {% endif %}
+{% else %}
+    <p class="muted">Поиск идёт по заголовкам и тексту публикаций.</p>
+{% endif %}
+
+{% endblock %}

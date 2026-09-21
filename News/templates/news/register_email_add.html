@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Email — Vibes{% endblock %}
+
+{% block content %}
+<div class="narrow">
+    <header class="narrow-head">
+        <h1 class="narrow-title">Ваш email</h1>
+        <p class="narrow-text">Пришлём на него шестизначный код.</p>
+    </header>
+
+    <form method="post" class="form">
+        {% csrf_token %}
+        {% include 'news/_form_fields.html' %}
+        <button type="submit" class="button button--block">Отправить код</button>
+    </form>
+
+    <div class="narrow-footer">
+        <a href="{% url 'register_email' %}" class="link">Назад</a>
+    </div>
+</div>
+{% endblock %}
