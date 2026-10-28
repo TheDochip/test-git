@@ -1,0 +1,60 @@
+{% extends 'board/base.html' %}
+
+{% block title %}Отклики на мои объявления{% endblock %}
+
+{% block content %}
+<h1>Отклики на мои объявления</h1>
+
+<form method="get" class="filters">
+    <div>
+        <label for="post-filter">Объявление</label>
+        <select id="post-filter" name="post" onchange="this.form.submit()">
+            <option value="">Все объявления</option>
+            {% for p in my_posts %}
+                <option value="{{ p.pk }}" {% if selected_post and selected_post.pk == p.pk %}selected{% endif %}>
+                    {{ p.title|truncatechars:60 }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div>
+        <label for="status-filter">Статус</label>
+        <select id="status-filter" name="status" onchange="this.form.submit()">
+            <option value="">Все</option>
+            <option value="new" {% if status == 'new' %}selected{% endif %}>Новые</option>
+            <option value="accepted" {% if status == 'accepted' %}selected{% endif %}>Принятые</option>
+        </select>
+    </div>
+    <noscript><button class="btn btn--small" type="submit">Показать</button></noscript>
+</form>
+
+{% for reply in replies %}
+    <article class="card">
+        <div class="meta">
+            <strong>{{ reply.author.username }}</strong>
+            на «<a href="{{ reply.post.get_absolute_url }}">{{ reply.post.title }}</a>»
+            · {{ reply.created_at|date:"d.m.Y H:i" }}
+            {% if reply.is_accepted %}<span class="badge badge--ok">Принят</span>{% endif %}
+        </div>
+        <div class="reply-text">{{ reply.text }}</div>
+
+        <div class="actions">
+            {% if not reply.is_accepted %}
+                <form class="inline-form" method="post" action="{% url 'reply_accept' reply.pk %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="return_query" value="{{ request.GET.urlencode }}">
+                    <button class="btn btn--small" type="submit">Принять</button>
+                </form>
+            {% endif %}
+            <form class="inline-form" method="post" action="{% url 'reply_delete' reply.pk %}"
+                  onsubmit="return confirm('Удалить отклик?')">
+                {% csrf_token %}
+                <input type="hidden" name="return_query" value="{{ request.GET.urlencode }}">
+                <button class="btn btn--danger btn--small" type="submit">Удалить</button>
+            </form>
+        </div>
+    </article>
+{% empty %}
+    <p class="empty">Откликов пока нет.</p>
+{% endfor %}
+{% endblock %}

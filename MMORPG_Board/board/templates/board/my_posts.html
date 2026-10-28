@@ -1,0 +1,24 @@
+{% extends 'board/base.html' %}
+
+{% block title %}Мои объявления{% endblock %}
+
+{% block content %}
+<div class="page-head">
+    <h1>Мои объявления</h1>
+    <a class="btn" href="{% url 'post_create' %}">Новое объявление</a>
+</div>
+
+{% for post in posts %}
+    <article class="card">
+        <span class="badge">{{ post.get_category_display }}</span>
+        <h2 class="card__title"><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h2>
+        <div class="meta">{{ post.created_at|date:"d.m.Y H:i" }}</div>
+        <div class="actions" style="margin-top: 10px">
+            <a class="btn btn--ghost btn--small" href="{% url 'post_edit' post.pk %}">Редактировать</a>
+            <a class="btn btn--ghost btn--small" href="{% url 'my_replies' %}?post={{ post.pk }}">Отклики</a>
+        </div>
+    </article>
+{% empty %}
+    <p class="empty">Вы ещё не разместили ни одного объявления.</p>
+{% endfor %}
+{% endblock %}

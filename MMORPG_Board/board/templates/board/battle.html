@@ -1,0 +1,82 @@
+{% extends 'board/base.html' %}
+
+{% block title %}Бой: {{ monster.name }}{% endblock %}
+
+{% block content %}
+{% include 'board/_game_nav.html' %}
+
+<h1>Бой</h1>
+
+<div class="grid-2">
+    <section class="card">
+        <div class="section-head">
+            <h2 class="section-title">{{ character.name }}</h2>
+            <span class="badge">Уровень {{ character.level }}</span>
+        </div>
+        <div class="bar-label"><span>Здоровье</span><span>{{ character.health }} / {{ character.max_health }}</span></div>
+        <div class="bar"><div class="bar__fill bar__fill--hp"
+             style="width: {% widthratio character.health character.max_health 100 %}%"></div></div>
+        <div class="stats-row">
+            <span>⚔️ {{ character.effective_strength }}</span>
+            <span>🛡️ {{ character.effective_defense }}</span>
+            <span>💨 {{ character.effective_speed }}</span>
+        </div>
+    </section>
+
+    <section class="card">
+        <div class="section-head">
+            <h2 class="section-title">{{ monster.name }}</h2>
+            <span class="badge">✨ {{ monster.experience_reward }} XP · 🪙 {{ monster.gold_reward }}</span>
+        </div>
+        {% if battle %}
+            <div class="bar-label"><span>Здоровье</span><span>{{ battle.monster_health }} / {{ monster.health }}</span></div>
+            <div class="bar"><div class="bar__fill bar__fill--enemy"
+                 style="width: {% widthratio battle.monster_health monster.health 100 %}%"></div></div>
+        {% else %}
+            <p class="meta">Бой ещё не начат.</p>
+        {% endif %}
+        <div class="stats-row">
+            <span>⚔️ {{ monster.attack }}</span>
+            <span>🛡️ {{ monster.defense }}</span>
+            <span>💨 {{ monster.speed }}</span>
+        </div>
+    </section>
+</div>
+
+<section class="card battle-result">
+{% if character.health <= 0 %}
+    <h2>💀 Поражение</h2>
+    <p>Персонаж погиб. Восстанови здоровье, чтобы продолжить.</p>
+    <a class="btn" href="{% url 'character' %}">К персонажу</a>
+
+{% elif not battle %}
+    <p>Чтобы начать бой, перейди к своим квестам.</p>
+    <a class="btn" href="{% url 'my_quests' %}">Мои квесты</a>
+
+{% elif battle.is_finished %}
+    {% if battle.is_won %}
+        <h2>🏆 Победа!</h2>
+        <p>Монстр побеждён, награда зачислена.</p>
+    {% else %}
+        <h2>💀 Поражение</h2>
+        <p>Этот бой завершён поражением.</p>
+    {% endif %}
+    <div class="actions">
+        <form method="post" action="{% url 'start_battle' monster.id %}">
+            {% csrf_token %}
+            <button class="btn" type="submit">Начать новый бой</button>
+        </form>
+        <a class="btn btn--ghost" href="{% url 'my_quests' %}">Мои квесты</a>
+    </div>
+
+{% else %}
+    <p class="meta">
+        {% if character.effective_speed > monster.speed %}Ты быстрее — бьёшь первым.{% else %}Монстр быстрее — он бьёт первым.{% endif %}
+    </p>
+    <form method="post" action="{% url 'attack_monster' monster.id %}">
+        {% csrf_token %}
+        <button class="btn btn--big" type="submit">⚔️ Атаковать</button>
+    </form>
+{% endif %}
+</section>
+{% endblock %}

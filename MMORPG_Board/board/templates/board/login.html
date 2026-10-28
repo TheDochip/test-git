@@ -1,0 +1,15 @@
+{% extends 'board/base.html' %}
+
+{% block title %}Вход{% endblock %}
+
+{% block content %}
+<div class="narrow">
+    <h1>Вход</h1>
+    <form method="post" class="form card">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn" type="submit">Войти</button>
+    </form>
+    <p class="meta">Нет аккаунта? <a href="{% url 'register' %}">Зарегистрируйтесь</a></p>
+</div>
+{% endblock %}

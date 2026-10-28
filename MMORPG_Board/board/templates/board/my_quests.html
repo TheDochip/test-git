@@ -1,0 +1,54 @@
+{% extends 'board/base.html' %}
+
+{% block title %}Мои квесты{% endblock %}
+
+{% block content %}
+{% include 'board/_game_nav.html' %}
+
+<h1>Мои квесты</h1>
+
+<div class="grid-2">
+{% for character_quest in character_quests %}
+    {% with quest=character_quest.quest %}
+    <article class="card quest">
+        <div class="section-head">
+            <h2 class="card__title">{{ quest.title }}</h2>
+            {% if character_quest.is_completed %}
+                <span class="badge badge--ok">Завершён</span>
+            {% elif character_quest.progress >= quest.target_amount %}
+                <span class="badge badge--ok">Цель выполнена</span>
+            {% else %}
+                <span class="badge">В процессе</span>
+            {% endif %}
+        </div>
+
+        <p class="excerpt">{{ quest.description }}</p>
+
+        <div class="bar-label">
+            <span>Прогресс</span>
+            <span>{{ character_quest.progress }} / {{ quest.target_amount }}</span>
+        </div>
+        <div class="bar"><div class="bar__fill bar__fill--xp"
+             style="width: {% widthratio character_quest.progress quest.target_amount 100 %}%"></div></div>
+
+        <div class="quest__meta">
+            <span class="badge">✨ {{ quest.experience_reward }} XP</span>
+            <span class="badge">🪙 {{ quest.gold_reward }}</span>
+        </div>
+
+        {% if character_quest.is_completed %}
+        {% elif character_quest.progress >= quest.target_amount %}
+            <form method="post" action="{% url 'complete_quest' quest.id %}">
+                {% csrf_token %}
+                <button class="btn btn--small" type="submit">Забрать награду</button>
+            </form>
+        {% elif quest.monster %}
+            <a class="btn btn--small" href="{% url 'battle' quest.monster.id %}">⚔️ Сражаться: {{ quest.monster.name }}</a>
+        {% endif %}
+    </article>
+    {% endwith %}
+{% empty %}
+    <p class="empty">У тебя пока нет принятых квестов. <a href="{% url 'quests' %}">Выбрать квест</a></p>
+{% endfor %}
+</div>
+{% endblock %}

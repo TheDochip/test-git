@@ -1,0 +1,29 @@
+{% extends 'board/base.html' %}
+
+{% block title %}Квесты{% endblock %}
+
+{% block content %}
+{% include 'board/_game_nav.html' %}
+
+<h1>Доступные квесты</h1>
+
+<div class="grid-2">
+{% for quest in quests %}
+    <article class="card quest">
+        <h2 class="card__title">{{ quest.title }}</h2>
+        <p class="excerpt">{{ quest.description }}</p>
+        <div class="quest__meta">
+            {% if quest.monster %}<span class="badge">Цель: {{ quest.monster.name }} × {{ quest.target_amount }}</span>{% endif %}
+            <span class="badge">✨ {{ quest.experience_reward }} XP</span>
+            <span class="badge">🪙 {{ quest.gold_reward }}</span>
+        </div>
+        <form method="post" action="{% url 'accept_quest' quest.id %}">
+            {% csrf_token %}
+            <button class="btn btn--small" type="submit">Принять квест</button>
+        </form>
+    </article>
+{% empty %}
+    <p class="empty">Квестов пока нет.</p>
+{% endfor %}
+</div>
+{% endblock %}

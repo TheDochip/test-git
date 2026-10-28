@@ -1,0 +1,126 @@
+{% extends 'board/base.html' %}
+
+{% block title %}Персонаж{% endblock %}
+
+{% block content %}
+{% include 'board/_game_nav.html' %}
+
+<section class="card hero">
+    <div class="avatar">{{ character.name|slice:":1"|upper }}</div>
+    <div class="hero__info">
+        <h1>{{ character.name }}</h1>
+        <div class="hero__meta">
+            <span class="badge">Уровень {{ character.level }}</span>
+            <span class="gold">🪙 {{ character.gold }} золота</span>
+        </div>
+
+        <div class="bar-label">
+            <span>Опыт</span>
+            <span>{{ character.experience }} / {{ character.experience_to_next_level }}</span>
+        </div>
+        <div class="bar"><div class="bar__fill bar__fill--xp"
+             style="width: {% widthratio character.experience character.experience_to_next_level 100 %}%"></div></div>
+    </div>
+</section>
+
+<div class="grid-2">
+    <section class="card">
+        <h2 class="section-title">Ресурсы</h2>
+
+        <div class="bar-label">
+            <span>Здоровье</span>
+            <span>{{ character.health }} / {{ character.max_health }}</span>
+        </div>
+        <div class="bar"><div class="bar__fill bar__fill--hp"
+             style="width: {% widthratio character.health character.max_health 100 %}%"></div></div>
+
+        <div class="bar-label">
+            <span>Мана</span>
+            <span>{{ character.mana }} / {{ character.max_mana }}</span>
+        </div>
+        <div class="bar"><div class="bar__fill bar__fill--mana"
+             style="width: {% widthratio character.mana character.max_mana 100 %}%"></div></div>
+
+        <div class="actions" style="margin-top: 16px">
+            <form class="inline-form" method="post" action="{% url 'heal_character' %}">
+                {% csrf_token %}
+                <button class="btn btn--small" type="submit"
+                        {% if character.health >= character.max_health %}disabled{% endif %}>
+                    Восстановить здоровье
+                </button>
+            </form>
+            <form class="inline-form" method="post" action="{% url 'restore_mana' %}">
+                {% csrf_token %}
+                <button class="btn btn--ghost btn--small" type="submit"
+                        {% if character.mana >= character.max_mana %}disabled{% endif %}>
+                    Восстановить ману
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <section class="card">
+        <div class="section-head">
+            <h2 class="section-title">Характеристики</h2>
+            {% if character.stat_points > 0 %}
+                <span class="badge badge--ok">Свободных очков: {{ character.stat_points }}</span>
+            {% else %}
+                <span class="badge">Свободных очков: 0</span>
+            {% endif %}
+        </div>
+
+        <div class="stat">
+            <span class="stat__name">⚔️ Сила</span>
+            <span class="stat__value">
+                {{ character.strength }}
+                {% if character.effective_strength != character.strength %}
+                    <small class="meta">({{ character.effective_strength }} с экипировкой)</small>
+                {% endif %}
+            </span>
+            <form method="post" action="{% url 'increase_strength' %}">
+                {% csrf_token %}
+                <button class="btn btn--ghost btn--small stat__btn" type="submit"
+                        {% if character.stat_points == 0 %}disabled{% endif %} title="+1 к силе">+1</button>
+            </form>
+        </div>
+
+        <div class="stat">
+            <span class="stat__name">🛡️ Защита</span>
+            <span class="stat__value">
+                {{ character.defense }}
+                {% if character.effective_defense != character.defense %}
+                    <small class="meta">({{ character.effective_defense }} с экипировкой)</small>
+                {% endif %}
+            </span>
+            <form method="post" action="{% url 'increase_defense' %}">
+                {% csrf_token %}
+                <button class="btn btn--ghost btn--small stat__btn" type="submit"
+                        {% if character.stat_points == 0 %}disabled{% endif %} title="+1 к защите">+1</button>
+            </form>
+        </div>
+
+        <div class="stat">
+            <span class="stat__name">💨 Скорость</span>
+            <span class="stat__value">
+                {{ character.speed }}
+                {% if character.effective_speed != character.speed %}
+                    <small class="meta">({{ character.effective_speed }} с экипировкой)</small>
+                {% endif %}
+            </span>
+            <form method="post" action="{% url 'increase_speed' %}">
+                {% csrf_token %}
+                <button class="btn btn--ghost btn--small stat__btn" type="submit"
+                        {% if character.stat_points == 0 %}disabled{% endif %} title="+1 к скорости">+1</button>
+            </form>
+        </div>
+
+        <p class="meta" style="margin: 12px 0 0">
+            {% if character.stat_points > 0 %}
+                Распредели очки между характеристиками.
+            {% else %}
+                Новые очки дают за каждый уровень.
+            {% endif %}
+        </p>
+    </section>
+</div>
+{% endblock %}

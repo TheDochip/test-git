@@ -1,0 +1,60 @@
+{% extends 'board/base.html' %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<article class="card">
+    <span class="badge">{{ post.get_category_display }}</span>
+    <h1 style="margin-top: 8px">{{ post.title }}</h1>
+    <div class="meta">
+        {{ post.author.username }} · {{ post.created_at|date:"d.m.Y H:i" }}
+        {% if post.updated_at|date:"U" != post.created_at|date:"U" %}
+            · изменено {{ post.updated_at|date:"d.m.Y H:i" }}
+        {% endif %}
+    </div>
+
+    {# Текст уже очищен от опасного HTML при сохранении (board/sanitizer.py) #}
+    <div class="post-content">{{ post.content|safe }}</div>
+
+    {% if user == post.author %}
+        <div class="actions" style="margin-top: 16px">
+            <a class="btn btn--ghost btn--small" href="{% url 'post_edit' post.pk %}">Редактировать</a>
+            <a class="btn btn--ghost btn--small" href="{% url 'my_replies' %}?post={{ post.pk }}">
+                Отклики ({{ post.replies.count }})
+            </a>
+            <form class="inline-form" method="post" action="{% url 'post_delete' post.pk %}"
+                  onsubmit="return confirm('Удалить объявление?')">
+                {% csrf_token %}
+                <button class="btn btn--danger btn--small" type="submit">Удалить</button>
+            </form>
+        </div>
+    {% endif %}
+</article>
+
+{% if can_reply %}
+    <section class="card">
+        {% if my_replies %}
+            <h3>Ваши отклики</h3>
+            {% for reply in my_replies %}
+                <div class="meta">
+                    {{ reply.created_at|date:"d.m.Y H:i" }}
+                    {% if reply.is_accepted %}<span class="badge badge--ok">Принят</span>{% endif %}
+                </div>
+                <div class="reply-text">{{ reply.text }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <h3>{% if already_replied %}Ещё один отклик{% else %}Откликнуться{% endif %}</h3>
+        <form method="post" class="form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="btn" type="submit">Отправить отклик</button>
+        </form>
+    </section>
+{% elif not user.is_authenticated %}
+    <p class="meta">
+        <a href="{% url 'login' %}?next={{ post.get_absolute_url }}">Войдите</a>
+        или <a href="{% url 'register' %}">зарегистрируйтесь</a>, чтобы откликнуться.
+    </p>
+{% endif %}
+{% endblock %}

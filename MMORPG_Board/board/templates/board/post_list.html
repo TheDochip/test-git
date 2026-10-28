@@ -1,0 +1,43 @@
+{% extends 'board/base.html' %}
+
+{% block title %}Объявления{% endblock %}
+
+{% block content %}
+<div class="page-head">
+    <h1>Объявления</h1>
+    {% if user.is_authenticated %}
+        <a class="btn" href="{% url 'post_create' %}">Разместить объявление</a>
+    {% endif %}
+</div>
+
+<div class="categories">
+    <a class="chip {% if not current_category %}chip--active{% endif %}" href="{% url 'home' %}">Все</a>
+    {% for value, label in categories %}
+        <a class="chip {% if current_category == value %}chip--active{% endif %}"
+           href="?category={{ value }}">{{ label }}</a>
+    {% endfor %}
+</div>
+
+{% for post in page %}
+    <article class="card">
+        <span class="badge">{{ post.get_category_display }}</span>
+        <h2 class="card__title"><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h2>
+        <div class="meta">{{ post.author.username }} · {{ post.created_at|date:"d.m.Y H:i" }}</div>
+        <p class="excerpt">{{ post.content|striptags|truncatewords:30 }}</p>
+    </article>
+{% empty %}
+    <p class="empty">Объявлений пока нет.</p>
+{% endfor %}
+
+{% if page.paginator.num_pages > 1 %}
+    <nav class="pagination">
+        {% if page.has_previous %}
+            <a href="?{% if current_category %}category={{ current_category }}&{% endif %}page={{ page.previous_page_number }}">← Назад</a>
+        {% endif %}
+        <span class="meta">Страница {{ page.number }} из {{ page.paginator.num_pages }}</span>
+        {% if page.has_next %}
+            <a href="?{% if current_category %}category={{ current_category }}&{% endif %}page={{ page.next_page_number }}">Вперёд →</a>
+        {% endif %}
+    </nav>
+{% endif %}
+{% endblock %}

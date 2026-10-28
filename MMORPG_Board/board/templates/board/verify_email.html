@@ -1,0 +1,21 @@
+{% extends 'board/base.html' %}
+
+{% block title %}Подтверждение e-mail{% endblock %}
+
+{% block content %}
+<div class="narrow">
+    <h1>Подтверждение e-mail</h1>
+    <p>Введите 6-значный код из письма, отправленного на <strong>{{ pending_user.email }}</strong>.</p>
+
+    <form method="post" class="form card">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn" type="submit">Подтвердить</button>
+    </form>
+
+    <form method="post" action="{% url 'resend_code' %}">
+        {% csrf_token %}
+        <button class="btn btn--ghost btn--small" type="submit">Отправить код ещё раз</button>
+    </form>
+</div>
+{% endblock %}

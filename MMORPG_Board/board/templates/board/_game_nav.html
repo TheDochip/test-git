@@ -1,0 +1,8 @@
+{% with current=request.resolver_match.url_name %}
+<nav class="tabs">
+    <a class="tab {% if current == 'character' %}tab--active{% endif %}" href="{% url 'character' %}">Персонаж</a>
+    <a class="tab {% if current == 'inventory' %}tab--active{% endif %}" href="{% url 'inventory' %}">Инвентарь</a>
+    <a class="tab {% if current == 'quests' %}tab--active{% endif %}" href="{% url 'quests' %}">Доступные квесты</a>
+    <a class="tab {% if current == 'my_quests' or current == 'battle' %}tab--active{% endif %}" href="{% url 'my_quests' %}">Мои квесты</a>
+</nav>
+{% endwith %}

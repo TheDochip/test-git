@@ -1,0 +1,120 @@
+{% extends 'board/base.html' %}
+
+{% block title %}{% if is_new %}Новое объявление{% else %}Редактирование{% endif %}{% endblock %}
+
+{% block content %}
+<h1>{% if is_new %}Новое объявление{% else %}Редактирование объявления{% endif %}</h1>
+
+<form method="post" class="form card">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+
+    <p>
+        {{ form.title.label_tag }}
+        {{ form.title.errors }}
+        {{ form.title }}
+    </p>
+    <p>
+        {{ form.category.label_tag }}
+        {{ form.category.errors }}
+        {{ form.category }}
+    </p>
+    <p>
+        {{ form.content.label_tag }}
+        {{ form.content.errors }}
+        {{ form.content }}
+        <span class="helptext">
+            Картинки можно вставить кнопкой «Изображение» или перетащить в текст.
+            Видео — кнопкой «Медиа» по ссылке с YouTube, VK Видео, Rutube или Vimeo.
+        </span>
+    </p>
+
+    <div class="actions">
+        <button class="btn" type="submit">{% if is_new %}Опубликовать{% else %}Сохранить{% endif %}</button>
+        <a class="btn btn--ghost" href="{% if post %}{{ post.get_absolute_url }}{% else %}{% url 'home' %}{% endif %}">Отмена</a>
+    </div>
+</form>
+{% endblock %}
+
+{% block scripts %}
+{# Визуальный редактор TinyMCE (бесплатная GPL-версия с CDN) #}
+<script src="https://cdn.jsdelivr.net/npm/tinymce@7.6.0/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+    function getCookie(name) {
+        const match = document.cookie.match(new RegExp('(^|;\\s*)' + name + '=([^;]*)'));
+        return match ? decodeURIComponent(match[2]) : null;
+    }
+
+    // Если CDN недоступен, остаётся обычное поле — в него можно писать HTML.
+    if (window.tinymce) {
+    // Перевод основных надписей редактора (остальное останется на английском)
+    tinymce.addI18n('ru', {
+        'Undo': 'Отменить', 'Redo': 'Повторить', 'Bold': 'Жирный', 'Italic': 'Курсив',
+        'Underline': 'Подчёркнутый', 'Strikethrough': 'Зачёркнутый', 'Blocks': 'Стиль',
+        'Paragraph': 'Абзац', 'Bullet list': 'Маркированный список',
+        'Numbered list': 'Нумерованный список', 'Blockquote': 'Цитата',
+        'Insert/edit link': 'Вставить/изменить ссылку', 'Link': 'Ссылка',
+        'Insert/edit image': 'Вставить/изменить изображение', 'Image': 'Изображение',
+        'Insert/edit media': 'Вставить/изменить видео', 'Media': 'Медиа',
+        'Table': 'Таблица', 'Source code': 'HTML-код', 'Upload': 'Загрузить',
+        'General': 'Основное', 'Embed': 'Код вставки', 'Source': 'Адрес',
+        'URL': 'Ссылка', 'Alternative description': 'Описание', 'Width': 'Ширина',
+        'Height': 'Высота', 'Constrain proportions': 'Сохранять пропорции',
+        'Save': 'Сохранить', 'Cancel': 'Отмена', 'Close': 'Закрыть',
+        'Text to display': 'Текст ссылки', 'Title': 'Заголовок',
+        'Open link in...': 'Открыть ссылку в...', 'New window': 'Новом окне',
+        'Current window': 'Текущем окне', 'Browse for an image': 'Выбрать файл',
+        'Drop an image here': 'Перетащите картинку сюда',
+        'Paste your embed code below:': 'Вставьте код для встраивания:',
+        'Image title': 'Подпись', 'Image description': 'Описание',
+    });
+
+    tinymce.init({
+        selector: 'textarea.rich-editor',
+        license_key: 'gpl',
+        language: 'ru',
+        skin: 'oxide-dark',
+        content_css: 'dark',
+        height: 450,
+        menubar: false,
+        branding: false,
+        promotion: false,
+        plugins: 'link image media lists autolink table code',
+        toolbar: 'undo redo | blocks | bold italic underline strikethrough | ' +
+                 'bullist numlist blockquote | link image media table | code',
+        block_formats: 'Абзац=p; Заголовок=h2; Подзаголовок=h3',
+        // ссылки на загруженные картинки оставляем как /media/...
+        relative_urls: false,
+        remove_script_host: true,
+        image_dimensions: true,
+        media_alt_source: false,
+        media_poster: false,
+        // загрузка картинок на наш сервер
+        automatic_uploads: true,
+        paste_data_images: true,
+        images_file_types: 'jpg,jpeg,png,gif,webp',
+        images_upload_handler: (blobInfo, progress) => {
+            const data = new FormData();
+            data.append('file', blobInfo.blob(), blobInfo.filename());
+            return fetch('{% url "upload_image" %}', {
+                method: 'POST',
+                headers: {'X-CSRFToken': getCookie('csrftoken')},
+                body: data,
+                credentials: 'same-origin',
+            })
+                .then(r => r.json().then(json => ({ok: r.ok, json})))
+                .then(({ok, json}) => {
+                    if (!ok || !json.location) {
+                        throw new Error(json.error || 'Не удалось загрузить картинку');
+                    }
+                    return json.location;
+                });
+        },
+        setup: (editor) => {
+            // перед отправкой формы переносим HTML в textarea
+            editor.on('change input undo redo', () => editor.save());
+        },
+    });
+    }
+</script>
+{% endblock %}

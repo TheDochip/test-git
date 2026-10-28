@@ -1,0 +1,61 @@
+{% extends 'board/base.html' %}
+
+{% block title %}Инвентарь{% endblock %}
+
+{% block content %}
+{% include 'board/_game_nav.html' %}
+
+<h1>Инвентарь</h1>
+
+<section class="card summary">
+    <div><span class="meta">Здоровье</span><strong>{{ character.health }} / {{ character.max_health }}</strong></div>
+    <div><span class="meta">⚔️ Сила</span><strong>{{ character.effective_strength }}</strong><small class="meta">база {{ character.strength }}</small></div>
+    <div><span class="meta">🛡️ Защита</span><strong>{{ character.effective_defense }}</strong><small class="meta">база {{ character.defense }}</small></div>
+    <div><span class="meta">💨 Скорость</span><strong>{{ character.effective_speed }}</strong><small class="meta">база {{ character.speed }}</small></div>
+</section>
+
+<div class="grid-3">
+{% for entry in inventory_items %}
+    {% with item=entry.item %}
+    <article class="card item {% if entry.is_equipped %}item--equipped{% endif %}">
+        <div class="section-head">
+            <span class="badge">{{ item.get_item_type_display }}</span>
+            <span class="meta">× {{ entry.quantity }}</span>
+        </div>
+        <h2 class="card__title">{{ item.name }}</h2>
+        {% if item.description %}<p class="excerpt">{{ item.description }}</p>{% endif %}
+
+        <ul class="bonuses">
+            {% if item.strength_bonus %}<li>⚔️ Сила +{{ item.strength_bonus }}</li>{% endif %}
+            {% if item.defense_bonus %}<li>🛡️ Защита +{{ item.defense_bonus }}</li>{% endif %}
+            {% if item.speed_bonus %}<li>💨 Скорость +{{ item.speed_bonus }}</li>{% endif %}
+            {% if item.heal_amount %}<li>❤️ Лечит {{ item.heal_amount }} HP</li>{% endif %}
+        </ul>
+
+        {% if entry.is_equipped %}
+            <form method="post" action="{% url 'unequip_item' entry.id %}">
+                {% csrf_token %}
+                <span class="badge badge--ok">Надето</span>
+                <button class="btn btn--ghost btn--small" type="submit">Снять</button>
+            </form>
+        {% elif item.item_type == 'weapon' or item.item_type == 'armor' %}
+            <form method="post" action="{% url 'equip_item' entry.id %}">
+                {% csrf_token %}
+                <button class="btn btn--small" type="submit">Надеть</button>
+            </form>
+        {% elif item.item_type == 'potion' %}
+            <form method="post" action="{% url 'use_item' entry.id %}">
+                {% csrf_token %}
+                <button class="btn btn--small" type="submit"
+                        {% if character.health >= character.max_health %}disabled title="Здоровье полное"{% endif %}>
+                    Использовать
+                </button>
+            </form>
+        {% endif %}
+    </article>
+    {% endwith %}
+{% empty %}
+    <p class="empty">Инвентарь пуст. Предметы выпадают с монстров.</p>
+{% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>MMORPG Board</title>
+</head>
+<body>
+
+<h1>MMORPG Board</h1>
+
+{% if user.is_authenticated %}
+    <h2>Персонаж</h2>
+
+    <p>Имя: {{ user.character.name }}</p>
+    <p>Уровень: {{ user.character.level }}</p>
+    <p>Опыт: {{ user.character.experience }}</p>
+    <p>Золото: {{ user.character.gold }}</p>
+
+    <p>
+    <a href="{% url 'character' %}">Мой персонаж</a>
+    </p>
+
+    <p>
+        <a href="{% url 'logout' %}">Выйти</a>
+    </p>
+{% else %}
+    <p>
+        <a href="{% url 'login' %}">Войти</a>
+    </p>
+
+    <p>
+        <a href="{% url 'register' %}">Регистрация</a>
+    </p>
+{% endif %}
+
+</body>
+</html>
